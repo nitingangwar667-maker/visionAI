@@ -31,12 +31,12 @@ export const WATERSHED_PRESETS = [
 ];
 
 const INDEX_OPTIONS = [
-  { id: "ndvi", name: "Vegetation · NDVI", low: "Sparse cover", high: "Healthy cover", min: -1, max: 1, lowMax: 0.2, mediumMax: 0.5, magnitude: "vegetation signal", description: "Higher values generally indicate denser, healthier green vegetation.", icon: Sprout, colors: ["#bb5657", "#e5a653", "#ede176", "#8bc77f", "#218364"] },
+  { id: "ndvi", name: "Vegetation · NDVI", low: "Sparse cover", high: "Dense green cover", min: -1, max: 1, lowMax: 0.2, mediumMax: 0.5, magnitude: "vegetation signal", description: "Higher values generally indicate denser green vegetation.", icon: Sprout, colors: ["#bb5657", "#e5a653", "#ede176", "#8bc77f", "#218364"] },
   { id: "ndwi", name: "Water · NDWI", low: "Drier", high: "Wetter", min: -1, max: 1, lowMax: -0.1, mediumMax: 0.3, magnitude: "water signal", description: "Higher values indicate a stronger surface-water or moisture signal.", icon: Droplets, colors: ["#bc8656", "#e3d18b", "#a7d8c1", "#4aa5a4", "#255a9d"] },
   { id: "smi", name: "Soil moisture · SMI", low: "Drier", high: "Moister", min: 0, max: 1, lowMax: 0.1, mediumMax: 0.3, magnitude: "moisture signal", description: "This moisture proxy is derived from near-infrared and shortwave-infrared reflectance; higher values suggest wetter surface conditions.", icon: Droplets, colors: ["#c7784e", "#e5bf75", "#b8d49b", "#61b6a2", "#346c9c"] },
   { id: "ndti", name: "Turbidity · NDTI", low: "Lower signal", high: "Higher signal", min: -1, max: 1, lowMax: 0.1, mediumMax: 0.3, magnitude: "turbidity signal", description: "Higher values can indicate more suspended material in water; confirm with field observations.", icon: Waves, colors: ["#397e9e", "#75bdb4", "#e4d58b", "#e79a60", "#bd5554"] },
   { id: "bsi", name: "Bare soil · BSI", low: "Less exposed", high: "More exposed", min: -1, max: 1, lowMax: 0, mediumMax: 0.2, magnitude: "bare-soil signal", description: "Higher values indicate more exposed or bare soil and may warrant a closer field review.", icon: Mountain, colors: ["#397c69", "#8eb987", "#e2d58a", "#df9b5d", "#a94f48"] },
-  { id: "evi", name: "Vegetation · EVI", low: "Sparse cover", high: "Healthy cover", min: -1, max: 1.5, lowMax: 0.2, mediumMax: 0.5, magnitude: "vegetation signal", description: "Higher values generally indicate denser green vegetation, with improved sensitivity in areas of thicker canopy.", icon: Sprout, colors: ["#bb5657", "#e5a653", "#ede176", "#8bc77f", "#218364"] },
+  { id: "evi", name: "Vegetation · EVI", low: "Sparse cover", high: "Dense green cover", min: -1, max: 1.5, lowMax: 0.2, mediumMax: 0.5, magnitude: "vegetation signal", description: "Higher values generally indicate denser green vegetation.", icon: Sprout, colors: ["#bb5657", "#e5a653", "#ede176", "#8bc77f", "#218364"] },
 ];
 const HEAT_CLASSES = [
   { id: "low", name: "Low", color: "#d58a61" },
@@ -504,7 +504,7 @@ export default function BhuvanMapCard({
             {isIndicesLoading ? "Updating point series · " : ""}
             {heatmapData?.acquired
               ? `Sentinel-2 · ${new Date(heatmapData.acquired).toLocaleDateString()}`
-              : "Real Sentinel-2 samples · 3.5 km radius"}
+              : "Sentinel-2 pixels · 3.5 km radius"}
           </small>
         </div>
       </div>
@@ -565,14 +565,14 @@ export default function BhuvanMapCard({
             {coords.longitude.toFixed(5)}° E
           </strong>
         </span>
-        <span className="text-emerald-700">Drag pin · click to inspect</span>
+        <span className="text-emerald-700">Drag marker · select a cell for details</span>
       </div>
 
       {observedCellCount > 0 && (
         <section className="heat-details" aria-label="Heatmap location details" data-tour="heat-details">
           <div className="heat-details-heading">
             <div>
-              <span className="heat-details-kicker">LOCATION INSIGHT</span>
+              <span className="heat-details-kicker">PIXEL DETAILS</span>
               <h3>{activeIndex.name} details</h3>
             </div>
             <span className="heat-details-source">

@@ -19,11 +19,10 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
       <div className="glass-panel p-8 rounded-2xl border border-slate-800 shadow-2xl flex flex-col items-center justify-center min-h-[300px] text-center gap-3">
         <Loader2 className="w-8 h-8 text-sky-400 animate-spin" />
         <div className="font-mono text-xs text-sky-300">
-          Retrieving Sentinel-2 observations for this location…
+          Loading satellite readings for this location…
         </div>
         <p className="text-[11px] text-slate-500 max-w-xs">
-          Preparing the 2022–2026 spectral indicators for your selected
-          coordinates.
+          Loading yearly index readings for the selected location.
         </p>
       </div>
     );
@@ -32,7 +31,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
   if (!summary || !summary.indices || summary.indices.length === 0) {
     return (
       <div className="glass-panel p-8 rounded-2xl border border-slate-800 shadow-2xl text-center text-slate-500 font-mono text-xs">
-        Select a watershed zone or click on the map to ingest satellite indices.
+        Choose a study area to load its available satellite readings.
       </div>
     );
   }
@@ -51,7 +50,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "ndvi",
       name: "NDVI",
-      label: "Biomass Canopy",
+      label: "Vegetation greenness",
       val: latest.ndvi,
       icon: Leaf,
       color: "text-emerald-400",
@@ -61,7 +60,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "ndwi",
       name: "NDWI",
-      label: "Surface Water",
+      label: "Surface water",
       val: latest.ndwi,
       icon: Droplets,
       color: "text-cyan-400",
@@ -71,7 +70,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "smi",
       name: "SMI",
-      label: "Soil Moisture",
+      label: "Surface moisture",
       val: latest.smi,
       icon: Sun,
       color: "text-amber-400",
@@ -81,7 +80,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "ndti",
       name: "NDTI",
-      label: "Turbidity (Silt)",
+      label: "Turbidity",
       val: latest.ndti,
       icon: Layers,
       color: "text-purple-400",
@@ -91,7 +90,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "evi",
       name: "EVI",
-      label: "Enhanced Veg",
+      label: "Enhanced vegetation",
       val: latest.evi,
       icon: Activity,
       color: "text-lime-400",
@@ -101,7 +100,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
     {
       key: "bsi",
       name: "BSI",
-      label: "Bare Soil Erosion",
+      label: "Bare soil",
       val: latest.bsi,
       icon: Compass,
       color: "text-rose-400",
@@ -145,18 +144,18 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
             <h3 className="text-base font-bold text-white tracking-wide">
-              {watershed_name || structure || "Selected Watershed Polygon"}
+              {watershed_name || structure || "Selected study area"}
             </h3>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
-            {category || "Multi-Temporal Sentinel-2 L2A Radiance Analysis"}
+            {category || "Satellite observations and index readings"}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {confidence && (
             <span className="text-xs font-mono bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-lg">
-              AI Conf: {Math.round(confidence * 100)}%
+              Model match: {Math.round(confidence * 100)}%
             </span>
           )}
           <span
@@ -172,7 +171,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
               <MapPin className="w-3.5 h-3.5" />
             )}
             {drift_m !== undefined
-              ? `Drift: ${drift_m.toFixed(0)}m`
+              ? `${drift_m.toFixed(0)} m from reference`
               : "Selected location"}
           </span>
         </div>
@@ -185,7 +184,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
         <span className="text-slate-500">Data source:</span>
         {hasRealObservation ? (
           <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-emerald-300">
-            Sentinel-2 pixel values
+            Sentinel-2 observations
           </span>
         ) : (
           <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-amber-300">
@@ -254,7 +253,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
           <Activity size={18} />
         </div>
         <div className="monitoring-signal-copy">
-          <span>LONG-TERM SIGNAL · {activeTab}</span>
+          <span>{activeTab} · YEARLY CHANGE</span>
           <strong>{trendLabel}</strong>
           <p>
             {activeTab} changed by {netChange > 0 ? "+" : ""}
@@ -279,7 +278,7 @@ export default function ExecutiveAnalyticsCard({ summary, isLoading }) {
             <span className="eyebrow">YEAR-BY-YEAR PROFILE</span>
             <strong>{activeTab} <span>trajectory</span></strong>
           </div>
-          <span className="monitoring-trend-range">{firstMetric.year} — {latestMetric.year} <span>·</span> {metricData.length} samples</span>
+          <span className="monitoring-trend-range">{firstMetric.year} — {latestMetric.year} <span>·</span> {metricData.length} years</span>
         </div>
 
         <div className="monitoring-trend-chart">

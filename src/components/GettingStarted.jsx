@@ -25,44 +25,44 @@ const steps = [
   {
     number: "01",
     icon: Map,
-    title: "Choose an area",
+    title: "Choose a study area",
     description:
-      "Select a watershed preset or click anywhere on the map to set a custom point. The marker shows the location used for the analysis.",
-    hint: "Choose a saved watershed or place the marker on a custom location.",
+      "Choose a watershed or click the map to set a point. The marker shows the location used for the readings.",
+    hint: "Select a watershed or move the marker.",
   },
   {
     number: "02",
     icon: Satellite,
-    title: "Review the satellite record",
+    title: "Review satellite readings",
     description:
-      "Give the map a moment to load. Explore the six index cards and year-by-year trend. Each index describes a different surface or vegetation signal.",
-    hint: "Compare vegetation, water, moisture, soil, and sediment indicators.",
+      "Compare six indices and their yearly values. Each index describes a different vegetation, water, or land condition.",
+    hint: "Use source labels to distinguish observations from estimates.",
   },
   {
     number: "03",
     icon: Camera,
-    title: "Capture an asset",
+    title: "Take a field photo",
     description:
-      "Allow camera access, frame the water or land asset, and capture a clear image. You can retake it before submitting.",
-    hint: "Use a steady, well-lit image of the asset you want to document.",
+      "Allow camera access, frame the asset, and take a photo. Review it and retake it if needed.",
+    hint: "A steady, well-lit photo is easier to review.",
   },
   {
     number: "04",
     icon: ShieldCheck,
-    title: "Create the audit",
+    title: "Submit or save the record",
     description:
-      "Submit the image with its coordinates. When online, the service validates the location, analyzes the image, and returns an audit PDF.",
-    hint: "Submit online for analysis, or save locally to sync when you reconnect.",
+      "The photo is paired with the selected coordinates. Submit it online for analysis and an audit PDF, or save it on this device while offline.",
+    hint: "Review the photo and location before submitting.",
   },
 ];
 
 const indices = [
-  ["NDVI", "Vegetation greenness and canopy signal."],
-  ["NDWI", "Relative surface-water signal; interpret with local context."],
-  ["SMI", "Relative moisture signal derived from near-infrared and SWIR."],
-  ["NDTI", "Relative turbidity or suspended-sediment signal."],
-  ["EVI", "Vegetation signal designed to reduce some background effects."],
-  ["BSI", "Relative bare-soil and exposed-ground signal."],
+  ["NDVI", "Vegetation greenness."],
+  ["NDWI", "Surface-water signal."],
+  ["SMI", "Surface-moisture estimate from near-infrared and SWIR."],
+  ["NDTI", "Turbidity or suspended-sediment signal."],
+  ["EVI", "Vegetation greenness, adjusted for some background effects."],
+  ["BSI", "Exposed or bare soil."],
 ];
 
 export default function GettingStarted({ onOpenWorkspace, isOnline }) {
@@ -100,15 +100,14 @@ export default function GettingStarted({ onOpenWorkspace, isOnline }) {
       <section className="guide-intro">
         <div className="guide-intro-copy">
           <span className="eyebrow">
-            <CircleHelp size={14} /> FIRST-TIME USER GUIDE
+            <CircleHelp size={14} /> GETTING STARTED
           </span>
-          <h2>From map point to watershed insight.</h2>
+          <h2>Choose a place. Read the indicators. Record what you see.</h2>
           <p>
-            Follow this short walkthrough to explore a location, understand the
-            satellite indicators, and create a field audit.
+            A short guide to the map, satellite readings, and field records.
           </p>
           <button className="button-primary" onClick={onOpenWorkspace}>
-            Start exploring <ArrowRight size={16} />
+            Open the map <ArrowRight size={16} />
           </button>
         </div>
         <div className="guide-intro-art" aria-hidden="true">
@@ -136,11 +135,11 @@ export default function GettingStarted({ onOpenWorkspace, isOnline }) {
       <section className="guide-section">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">INTERACTIVE WALKTHROUGH</span>
-            <h3>Get to know your workspace</h3>
+            <span className="eyebrow">STEP-BY-STEP GUIDE</span>
+            <h3>How it works</h3>
           </div>
           <span className="section-caption">
-            {isPlaying ? "Auto-playing guide" : "Guide paused"}
+            {isPlaying ? "Playing" : "Paused"}
           </span>
         </div>
         <div className="tour-player">
@@ -371,8 +370,8 @@ export default function GettingStarted({ onOpenWorkspace, isOnline }) {
             ))}
           </dl>
           <p className="guide-footnote">
-            These are screening indicators, not field measurements or
-            standalone proof of ecological change.
+              These are satellite indicators, not field measurements. Check the
+              source and local conditions before drawing conclusions.
           </p>
         </article>
       </section>
@@ -380,8 +379,8 @@ export default function GettingStarted({ onOpenWorkspace, isOnline }) {
       <section className="guide-section">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">GOOD TO KNOW</span>
-            <h3>Use the platform with confidence</h3>
+            <span className="eyebrow">BEFORE YOU START</span>
+            <h3>A few things to remember</h3>
           </div>
         </div>
         <div className="guide-tips">

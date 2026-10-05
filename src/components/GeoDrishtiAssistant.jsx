@@ -111,7 +111,7 @@ const CHAT_LANGUAGES = {
     monitoring: "Monitoring",
     tour: "Tour",
     disclaimer: "Site guide · Indices are screening indicators, not field measurements.",
-    welcome: "Welcome to Drishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
+    welcome: "Ask me about the map, an index, or your saved records.",
     prompts: QUICK_QUESTIONS,
   },
   hi: {
@@ -128,7 +128,7 @@ const CHAT_LANGUAGES = {
     monitoring: "निगरानी",
     tour: "परिचय",
     disclaimer: "साइट मार्गदर्शिका · सूचक केवल संकेत हैं, जमीनी माप नहीं।",
-    welcome: "Drishti में आपका स्वागत है। मैं साइट इस्तेमाल करने और उपलब्ध उपग्रह रीडिंग समझने में मदद कर सकता हूँ।",
+    welcome: "मानचित्र, सूचकांक या सहेजे गए रिकॉर्ड के बारे में पूछें।",
     prompts: ["मेरा नया डेटा क्या बताता है?", "हीटमैप के रंग समझाएँ", "फील्ड फोटो कहाँ अपलोड करूँ?"],
   },
   kn: {
@@ -145,7 +145,7 @@ const CHAT_LANGUAGES = {
     monitoring: "ಮೇಲ್ವಿಚಾರಣೆ",
     tour: "ಪರಿಚಯ",
     disclaimer: "ಸೈಟ್ ಮಾರ್ಗದರ್ಶಿ · ಸೂಚ್ಯಂಕಗಳು ಕೇವಲ ಸೂಚನೆಗಳು, ಕ್ಷೇತ್ರದ ಅಳತೆಗಳಲ್ಲ.",
-    welcome: "Drishti ಗೆ ಸ್ವಾಗತ. ಸೈಟ್ ಬಳಸಲು ಮತ್ತು ಲಭ್ಯವಿರುವ ಉಪಗ್ರಹ ಓದುಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ನಾನು ಸಹಾಯ ಮಾಡುತ್ತೇನೆ.",
+    welcome: "ನಕ್ಷೆ, ಸೂಚ್ಯಂಕ ಅಥವಾ ಉಳಿಸಿದ ದಾಖಲೆಗಳ ಬಗ್ಗೆ ಕೇಳಿ.",
     prompts: ["ನನ್ನ ಇತ್ತೀಚಿನ ಡೇಟಾ ಏನು ಹೇಳುತ್ತದೆ?", "ಹೀಟ್‌ಮ್ಯಾಪ್ ಬಣ್ಣಗಳನ್ನು ವಿವರಿಸಿ", "ಕ್ಷೇತ್ರದ ಫೋಟೋವನ್ನು ಎಲ್ಲಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಿ?"],
   },
 };
@@ -393,10 +393,10 @@ function answerQuestion(question, context, language = "en") {
   }
   if (/tour|beginner|getting started|how do i start/.test(text)) {
     context.onStartTour();
-    return "I’ve started the guided platform tour. It walks through navigation, the watershed map, monitoring, field audits, and offline records without submitting or syncing anything.";
+    return "The tour is open. It explains the map, satellite readings, field photos, and offline records.";
   }
   if (/what can you|what do you know|help|features|what does this site|about (geo)?drishti/.test(text)) {
-    return "Drishti brings six workflows together:\n\n• Home: location and workspace overview.\n• Map: select a watershed, inspect a colour-coded satellite-index grid, and read sampled-pixel summaries.\n• Monitoring: compare annual NDVI, NDWI, SMI, NDTI, EVI, and BSI values and their source labels.\n• Upload: capture a field-asset photo and submit an audit when online.\n• Offline vault: keep queued field records on this device and sync them when connected.\n• About: platform context and a beginner guide.\n\nI can also explain your currently loaded readings.";
+    return "Drishti lets you:\n\n• Choose a watershed and inspect its map.\n• Compare yearly NDVI, NDWI, SMI, NDTI, EVI, and BSI readings.\n• Photograph an asset and submit an audit when online.\n• Save audit records on this device and sync them later.\n\nAsk me about an index or the data currently shown.";
   }
   if (/heat.?map|heat map|colour|color|red|green|yellow|pixel|range|low|medium|moderate|high/.test(text) && /map|heat|colour|color|pixel|low|medium|moderate|high|red|green|yellow/.test(text)) {
     return mapReply(context.coords, context.heatmapSummary);
@@ -462,7 +462,7 @@ export default function GeoDrishtiAssistant({
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "Welcome to Drishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
+      text: "Ask me about the map, an index, or your saved records.",
     },
   ]);
   const messagesEndRef = useRef(null);

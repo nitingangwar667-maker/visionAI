@@ -11,9 +11,9 @@ export const GUIDED_SITE_STEPS = [
     tab: "home",
     target: "main-navigation",
     icon: Map,
-    title: "Move between workspace sections",
+    title: "Move between sections",
     description:
-      "Use these tabs to move between Home, Map, Upload, Monitoring, Offline vault, and About.",
+      "Use the tabs to open Home, Map, Upload, Monitoring, Offline vault, or About.",
     demo: "navigation",
   },
   {
@@ -22,7 +22,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Start with your overview",
     description:
-      "Home brings your current study location, data availability, latest vegetation signal, and offline record count into one dashboard.",
+      "Home shows the selected location, latest readings, connection, and saved records.",
     demo: "overview",
   },
   {
@@ -31,7 +31,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Map,
     title: "Choose a watershed",
     description:
-      "Pick a saved watershed from this selector. The map marker and coordinates update to the selected area.",
+      "Choose a watershed to move the map marker and update its coordinates.",
     demo: "preset",
   },
   {
@@ -40,7 +40,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Map,
     title: "Explore the map",
     description:
-      "Click the map or drag its marker to explore another location. The coloured grid appears as you zoom in; click or hover over a cell to inspect its sampled index value.",
+      "Click the map or drag the marker to another location. Zoom in to see index cells; select a cell to inspect its value.",
     demo: "map-point",
   },
   {
@@ -49,7 +49,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Choose an index heatmap",
     description:
-      "Choose NDVI for vegetation greenness, NDWI for surface-water signal, SMI for a surface-moisture proxy, NDTI for turbidity-related signal, BSI for exposed soil, or EVI for vegetation. These are satellite indicators, not field measurements.",
+      "Choose NDVI or EVI for vegetation, NDWI for water, SMI for moisture, NDTI for turbidity, or BSI for exposed soil. These are satellite indicators, not field measurements.",
     demo: "map-index",
   },
   {
@@ -58,7 +58,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Compare available observation years",
     description:
-      "Choose an available year from 2022–2026. The map only draws valid Sentinel-2 pixels for the selected scene; if no scene or pixels are available, the map reports that instead of inventing a heatmap.",
+      "Choose a year from 2022–2026. The map shows valid Sentinel-2 pixels when available; if there are none, it reports that.",
     demo: "map-year",
   },
   {
@@ -67,7 +67,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Map,
     title: "Pick a map style",
     description:
-      "Use the map's layer control to choose the available base map: Mapbox Satellite for imagery, Mapbox Outdoors for terrain context, OpenStreetMap for reference streets, or ISRO Bhuvan when available. Satellite index colours are a separate overlay.",
+      "Choose Mapbox Satellite, Mapbox Outdoors, OpenStreetMap, or ISRO Bhuvan from the layer menu. The index-colour overlay is separate.",
     demo: "base-layer",
   },
   {
@@ -76,7 +76,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Read the heatmap",
     description:
-      "The legend maps low-to-high index values to colour. Below the map, read the nearest valid pixel, area average, observed range, and low/moderate/high pixel counts. High is a high index value, not automatically a good outcome.",
+      "Use the legend and the summary below the map to read pixel values and ranges. A high index value is not always a good outcome.",
     demo: "heatmap-reading",
   },
   {
@@ -85,7 +85,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Check the live overview",
     description:
-      "These summary metrics show your current coordinates, connection, and saved audit count at a glance.",
+      "See the selected coordinates, connection, latest reading, and saved audit count.",
     demo: "quick-metrics",
   },
   {
@@ -94,7 +94,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Check where the data comes from",
     description:
-      "This label distinguishes satellite pixel observations from coordinate-derived estimates. Treat estimates as screening information, not measured satellite data.",
+      "Source labels distinguish Sentinel-2 observations from estimates. Estimates are not satellite measurements.",
     demo: "data-source",
   },
   {
@@ -103,7 +103,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Compare satellite indicators",
     description:
-      "Select an index card to inspect vegetation (NDVI/EVI), surface water (NDWI), moisture proxy (SMI), turbidity-related signal (NDTI), or exposed soil (BSI). Check source labels; coordinate estimates are not satellite observations.",
+      "Select an index to view its readings. Check the source label to see whether each year is an observation or an estimate.",
     demo: "monitoring-index",
   },
   {
@@ -112,7 +112,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Satellite,
     title: "Read the yearly trend",
     description:
-      "The chart compares annual samples for the selected index. Estimated values are identified separately from Sentinel-2 observations.",
+      "Compare yearly values for the selected index. Estimates are marked separately from Sentinel-2 observations.",
     demo: "trend",
   },
   {
@@ -121,7 +121,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Camera,
     title: "Document a field asset",
     description:
-      "Allow camera access, frame the asset, and capture a photo. A quick blur and lighting screen gives advice; it does not block the photo. Review it, then choose Retake or continue with this image.",
+      "Allow camera access, frame the asset, and take a photo. Review it and retake if needed.",
     demo: "camera",
   },
   {
@@ -130,7 +130,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Camera,
     title: "Review image-quality guidance",
     description:
-      "A blurry, very dark, or overexposed image triggers a retake suggestion, but you can still use it if you choose. Clean the lens, hold steady, and check lighting for a clearer record.",
+      "Blur or poor lighting prompts a retake suggestion, but does not block the photo.",
     demo: "quality",
   },
   {
@@ -139,7 +139,7 @@ export const GUIDED_SITE_STEPS = [
     icon: FileCheck,
     title: "What happens after capture?",
     description:
-      "When online, Generate field audit sends the photo for object detection, loads the index series, and downloads an informational PDF report. If the detector finds no object, the image is still accepted and the report says no object was recognized—retake or continue. Offline, Save to vault queues the image on this device for syncing later.",
+      "Online, submit the photo for analysis and download the audit PDF. If no object is recognized, the photo is still accepted. Offline, save the audit on this device to sync later.",
     demo: "audit",
   },
   {
@@ -148,7 +148,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Database,
     title: "Manage offline records",
     description:
-      "Offline audits stay in this browser until you choose to sync them. Review pending records here; the tour will not sync or delete them.",
+      "Review audits saved in this browser. They stay here until you choose to sync or remove them.",
     demo: "vault",
   },
   {
@@ -157,16 +157,16 @@ export const GUIDED_SITE_STEPS = [
     icon: Database,
     title: "Sync only when you choose",
     description:
-      "When online, use this button to send queued audits. It is disabled when there are no records or the device is offline.",
+      "When online, use this button to send queued audits. It is unavailable when offline or when the queue is empty.",
     demo: "sync",
   },
   {
     tab: "about",
     target: "about-overview",
     icon: FileCheck,
-    title: "Learn about Drishti",
+    title: "About Drishti",
     description:
-      "About introduces the platform, its data and field-audit workflow, and the beginner guide for learning each feature.",
+      "Find a short guide to the map, satellite readings, and field records.",
     demo: "about",
   },
 ];

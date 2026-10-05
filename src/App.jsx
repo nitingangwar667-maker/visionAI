@@ -94,8 +94,8 @@ export default function App() {
           setAuditSummary({
             watershed_name: data.watershed_name,
             category: hasEstimatedValues
-              ? "Sentinel-2 with coordinate-derived gaps"
-              : "Copernicus Sentinel-2 MSI pixel ingestion",
+              ? "Sentinel-2 observations; estimates for missing years"
+              : "Sentinel-2 observations",
             indices: data.indices,
           });
         }
@@ -300,34 +300,34 @@ export default function App() {
               onOpenMonitoring={() => handleNavigation("monitoring")}
             />
 
-            <section className="home-section" aria-label="Explore platform features">
+            <section className="home-section" aria-label="Explore Drishti">
               <div className="home-section-heading">
                 <div>
-                  <span className="eyebrow">YOUR WORKSPACE</span>
-                  <h2>Everything you need, in one place.</h2>
+                  <span className="eyebrow">EXPLORE DRISHTI</span>
+                  <h2>Maps, indicators, and field records.</h2>
                 </div>
-                <span className="home-section-note">Choose a workspace to get started</span>
+                <span className="home-section-note">Choose a section to get started</span>
               </div>
               <div className="feature-grid">
                 <button className="feature-card feature-map" onClick={() => handleNavigation("map")}>
                   <span className="feature-icon"><MapPinned size={19} /></span>
                   <span className="feature-index">01 / EXPLORE</span>
                   <strong>Watershed map</strong>
-                  <span className="feature-description">Select a basin, reposition your study point, and review its coordinates.</span>
+                  <span className="feature-description">Choose a watershed or set a point on the map.</span>
                   <span className="feature-link">Open map <ArrowRight size={14} /></span>
                 </button>
                 <button className="feature-card feature-monitoring" onClick={() => handleNavigation("monitoring")}>
                   <span className="feature-icon"><ChartNoAxesCombined size={19} /></span>
                   <span className="feature-index">02 / MONITOR</span>
                   <strong>Satellite indicators</strong>
-                  <span className="feature-description">Compare six environmental indices and annual trends for your selected point.</span>
+                  <span className="feature-description">Compare six indices and their yearly readings.</span>
                   <span className="feature-link">View monitoring <ArrowRight size={14} /></span>
                 </button>
                 <button className="feature-card feature-upload" onClick={() => handleNavigation("upload")}>
                   <span className="feature-icon"><Camera size={19} /></span>
                   <span className="feature-index">03 / DOCUMENT</span>
                   <strong>Field asset audit</strong>
-                  <span className="feature-description">Capture a photo and prepare a geotagged field record or audit certificate.</span>
+                  <span className="feature-description">Add a location to a photo and create an audit report.</span>
                   <span className="feature-link">Start an audit <ArrowRight size={14} /></span>
                 </button>
               </div>
@@ -337,9 +337,9 @@ export default function App() {
               <article className="home-data-card">
                 <div className="home-data-icon"><Leaf size={18} /></div>
                 <div>
-                  <span className="eyebrow">LATEST VEGETATION SIGNAL</span>
+                  <span className="eyebrow">LATEST NDVI</span>
                   <strong>{auditSummary?.indices?.at(-1)?.ndvi?.toFixed(3) ?? "—"}</strong>
-                  <p>{auditSummary?.watershed_name ?? "Choose a location to view watershed data."}</p>
+                  <p>{auditSummary?.watershed_name ?? "Choose a study area to load readings."}</p>
                 </div>
                 <button className="text-action" onClick={() => handleNavigation("monitoring")}>
                   Explore data <ArrowRight size={14} />
@@ -347,9 +347,9 @@ export default function App() {
               </article>
               <article className="home-guide-card">
                 <div className="home-guide-copy">
-                  <span className="eyebrow"><CircleHelp size={13} /> NEW TO GEODRISHTI?</span>
-                  <strong>Take the guided platform tour</strong>
-                  <p>See how the map, monitoring, field audits, and offline vault work together.</p>
+                  <span className="eyebrow"><CircleHelp size={13} /> FIRST VISIT?</span>
+                  <strong>Take a quick tour</strong>
+                  <p>Learn how to use the map, compare readings, and save field records.</p>
                 </div>
                 <button className="button-secondary" onClick={startGuidedTour}>
                   Start tour <ArrowRight size={15} />
@@ -454,12 +454,12 @@ export default function App() {
           <section className="section-page monitoring-page">
             <div className="section-page-heading monitoring-page-heading">
               <div>
-                <span className="eyebrow"><ChartNoAxesCombined size={14} /> WATERSHED INTELLIGENCE / MONITORING</span>
-                <h1>Environmental monitoring</h1>
-                <p>Explore spectral indices and annual signals for the current study location.</p>
+                <span className="eyebrow"><ChartNoAxesCombined size={14} /> MONITORING</span>
+                <h1>Satellite indicators</h1>
+                <p>Compare yearly index readings for the selected location.</p>
               </div>
               <div className="monitoring-heading-actions">
-                <span className="monitoring-live-label"><span /> ANNUAL SERIES</span>
+                <span className="monitoring-live-label"><span /> YEARLY READINGS</span>
                 <button className="button-secondary" onClick={() => handleNavigation("map")}>
                   <MapPinned size={15} /> Change location
                 </button>
@@ -482,8 +482,8 @@ export default function App() {
               </div>
               <div>
                 <span className="monitoring-summary-index">03</span>
-                <span className="eyebrow">OBSERVATION SOURCE</span>
-                <strong>{auditSummary?.category ?? "Sentinel-2 and coordinate estimates"}</strong>
+                <span className="eyebrow">DATA SOURCE</span>
+                <strong>{auditSummary?.category ?? "Loading source details…"}</strong>
               </div>
               <div>
                 <span className="monitoring-summary-index">04</span>
@@ -493,7 +493,7 @@ export default function App() {
             </div>
             <ExecutiveAnalyticsCard summary={auditSummary} isLoading={isIndicesLoading} />
             <p className="monitoring-disclaimer">
-              Indices are screening indicators, not field measurements or standalone proof of ecological change. Review source labels and local context before making decisions.
+              These indices are screening indicators, not field measurements. Check their source, season, and local conditions before drawing conclusions.
             </p>
           </section>
         )}
@@ -502,9 +502,9 @@ export default function App() {
           <section className="section-page vault-page">
             <div className="section-page-heading">
               <div>
-                <span className="eyebrow"><ShieldCheck size={14} /> LOCAL-FIRST FIELD RECORDS</span>
+                <span className="eyebrow"><ShieldCheck size={14} /> SAVED ON THIS DEVICE</span>
                 <h1>Offline audit vault</h1>
-                <p>Your unsynced field records stay in this browser until they can be synchronized.</p>
+                <p>Unsynced field records stay in this browser until you choose to sync them.</p>
               </div>
               <div className={`page-status-pill ${isOnline ? "online" : "offline"}`}>
                 {isOnline ? "Connected" : "Offline mode"}
@@ -522,23 +522,34 @@ export default function App() {
           <section className="section-page about-page" data-tour="about-overview">
             <div className="section-page-heading">
               <div>
-                <span className="eyebrow"><Globe2 size={14} /> ABOUT THE PLATFORM</span>
-                <h1>Better context for every field observation.</h1>
-                <p>Drishti brings watershed mapping, satellite-derived indicators, and field documentation into one practical workspace.</p>
+                <span className="eyebrow"><Globe2 size={14} /> ABOUT DRISHTI</span>
+                <h1>Watershed maps and field records.</h1>
+                <p>Use satellite indices to explore a location, then add field observations to help document what is there.</p>
               </div>
               <button className="button-primary" onClick={startGuidedTour}>
                 <BookOpen size={16} /> Take the site tour
               </button>
             </div>
             <div className="about-feature-grid">
-              <article><span className="about-feature-icon"><MapPinned size={18} /></span><span className="eyebrow">01 · EXPLORE</span><h2>Location-aware mapping</h2><p>Choose a watershed preset or place a custom study point using the map.</p></article>
-              <article><span className="about-feature-icon"><Satellite size={18} /></span><span className="eyebrow">02 · MONITOR</span><h2>Environmental signals</h2><p>Review NDVI, NDWI, SMI, NDTI, EVI, and BSI with yearly comparisons and source labels.</p></article>
-              <article><span className="about-feature-icon"><FileCheck size={18} /></span><span className="eyebrow">03 · DOCUMENT</span><h2>Field audit workflow</h2><p>Pair asset photos with study coordinates to create or queue an audit record.</p></article>
+              <article><span className="about-feature-icon"><MapPinned size={18} /></span><span className="eyebrow">01 · MAP</span><h2>Choose a study area</h2><p>Select a watershed or set a point on the map.</p></article>
+              <article><span className="about-feature-icon"><Satellite size={18} /></span><span className="eyebrow">02 · INDICATORS</span><h2>Compare satellite readings</h2><p>Review six indices by year and check whether values come from satellite data or estimates.</p></article>
+              <article><span className="about-feature-icon"><FileCheck size={18} /></span><span className="eyebrow">03 · FIELD RECORDS</span><h2>Document an asset</h2><p>Capture a photo, review its location, and submit or save the audit for later.</p></article>
             </div>
             <GettingStarted
               onOpenWorkspace={() => handleNavigation("map")}
               isOnline={isOnline}
             />
+            <div className="creator-credit">
+              <span className="creator-credit-sparkle" aria-hidden="true">
+                <Sparkles size={15} />
+              </span>
+              <span className="creator-credit-copy">
+                <small>PROJECT BY</small>
+                <span>Created by</span>
+                <strong>saviour_tech</strong>
+              </span>
+              <span className="creator-credit-orbit" aria-hidden="true" />
+            </div>
           </section>
         )}
       </main>
@@ -547,9 +558,9 @@ export default function App() {
         <span className="site-footer-brand">
           <Satellite size={15} /> Drishti
         </span>
-        <span>Watershed intelligence · Field-ready insights</span>
+        <span>Satellite readings · Field records · Offline access</span>
         <button type="button" onClick={() => handleNavigation("about")}>
-          About the platform <ArrowRight size={13} />
+          About Drishti <ArrowRight size={13} />
         </button>
       </footer>
 

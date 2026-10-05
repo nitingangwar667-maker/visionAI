@@ -11,37 +11,37 @@ const slides = [
   {
     image:
       "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2200&q=85",
-    eyebrow: "GEOSPATIAL FIELD INTELLIGENCE",
-    title: ["See your watershed", "with more clarity."],
+    eyebrow: "WATERSHED OVERVIEW",
+    title: ["Explore your", "watershed."],
     description:
-      "Explore satellite signals, capture field observations, and turn location data into useful, verifiable records.",
-    tag: "LANDSCAPE OVERVIEW",
-    primary: "Explore the watershed",
-    secondary: "View monitoring",
+      "Choose a study area, inspect satellite indicators, and document field assets at mapped locations.",
+    tag: "STUDY AREA",
+    primary: "Open watershed map",
+    secondary: "View indicators",
     action: "map",
   },
   {
     image:
       "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=2200&q=85",
-    eyebrow: "SATELLITE-POWERED MONITORING",
-    title: ["Read the signals", "behind the landscape."],
+    eyebrow: "SATELLITE INDICATORS",
+    title: ["Compare readings", "across years."],
     description:
-      "Compare six environmental indices and annual trends while keeping satellite observations distinct from estimates.",
-    tag: "EARTH OBSERVATION",
-    primary: "View monitoring",
-    secondary: "Explore the map",
+      "Review NDVI, NDWI, and other indices by year. Source labels distinguish Sentinel-2 observations from estimates.",
+    tag: "ANNUAL COMPARISON",
+    primary: "View indicators",
+    secondary: "Open map",
     action: "monitoring",
   },
   {
     image:
       "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2200&q=85",
-    eyebrow: "FIELD OBSERVATIONS, CONNECTED",
-    title: ["From field photo", "to trusted record."],
+    eyebrow: "FIELD RECORDS",
+    title: ["Record what you", "find on site."],
     description:
-      "Document a real-world asset at your study point, then submit an audit online or keep it safely queued offline.",
-    tag: "FIELD AUDIT WORKFLOW",
-    primary: "Start a field audit",
-    secondary: "View monitoring",
+      "Capture and review an asset photo with its study location. Submit it online or save it on this device while offline.",
+    tag: "FIELD AUDIT",
+    primary: "Open field audit",
+    secondary: "View indicators",
     action: "upload",
   },
 ];
@@ -139,7 +139,7 @@ export default function HomeHero({
         <div className="home-hero-meta">
           <span>
             <span className="status-pulse" />
-            {isOnline ? "Internet connected" : "Offline-ready workspace"}
+            {isOnline ? "Connected" : "Offline"}
           </span>
           <span>Copernicus Sentinel-2 · 2022–2026</span>
         </div>

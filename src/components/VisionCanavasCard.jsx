@@ -207,11 +207,11 @@ export default function VisionCanvasCard({
             <Scan className="w-4 h-4 animate-pulse" />
           </div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Ground Vision Feed
+            Field photo
           </span>
         </div>
         <span className="text-[10px] font-mono bg-slate-800 text-sky-400 px-2 py-0.5 rounded border border-slate-700">
-          YOLOv8n Neural Core
+        PHOTO ANALYSIS
         </span>
       </div>
 
@@ -235,8 +235,8 @@ export default function VisionCanvasCard({
         {isProcessing && (
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
             <Sparkles className="w-8 h-8 text-sky-400 animate-spin" />
-            <span className="text-xs font-mono text-sky-300">
-              Executing Forward Pass & Sentinel Ingestion...
+            <span className="text-xs text-sky-100">
+              Reviewing photo and location…
             </span>
           </div>
         )}
@@ -272,7 +272,7 @@ export default function VisionCanvasCard({
       {Array.isArray(analysisResult?.detections) && (
         <p className={`camera-quality-message ${analysisResult.detections.length ? "passed" : "warning"}`} role="status">
           {analysisResult.detections.length
-            ? `Detector found ${analysisResult.detections.length} object${analysisResult.detections.length === 1 ? "" : "s"}. Review the AI result; detections do not verify an asset.`
+            ? `${analysisResult.detections.length} possible object${analysisResult.detections.length === 1 ? "" : "s"} detected. Review the result; it does not verify the asset.`
             : "No object was recognized. Your photo was still accepted and the report was generated. Retake for a clearer view or continue with this photo."}
         </p>
       )}
@@ -285,7 +285,7 @@ export default function VisionCanvasCard({
           className="mt-3 w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs tracking-wide shadow-lg shadow-sky-500/20 transition active:scale-[0.98]"
         >
           <Camera className="w-4 h-4" />
-          {cameraReady ? "CAPTURE FIELD ASSET" : cameraError ? "CAMERA UNAVAILABLE" : "STARTING CAMERA…"}
+          {cameraReady ? "TAKE PHOTO" : cameraError ? "CAMERA UNAVAILABLE" : "STARTING CAMERA…"}
         </button>
       ) : (
         <button

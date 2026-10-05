@@ -40,10 +40,11 @@ export default function Header({
             <Satellite size={21} strokeWidth={1.8} />
           </span>
           <span className="brand-copy">
-            <strong>
-              Drishti
+            <strong className="brand-name" aria-hidden="true">
+              <span className="brand-name-typed">Drisht</span>
+              <span className="brand-name-falling-i">i</span>
             </strong>
-            <small>Watershed field intelligence</small>
+            <small>WATERSHED MONITORING</small>
           </span>
         </a>
 
@@ -82,10 +83,10 @@ export default function Header({
       <div className="header-subline">
         <span className="live-indicator">
           <Activity size={13} />
-          {isOnline ? "Workspace ready" : "Local workspace available"}
+          {isOnline ? "Ready" : "Available offline"}
         </span>
         <span className="subline-separator" />
-        <span>Sentinel-2 multispectral monitoring</span>
+        <span>Sentinel-2 · 2022–2026</span>
       </div>
     </header>
   );
