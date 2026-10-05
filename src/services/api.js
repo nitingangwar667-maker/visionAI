@@ -18,7 +18,7 @@ export async function fetchWatershedIndices(
   });
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3500);
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
   const abortRequest = () => controller.abort();
   if (requestSignal?.aborted) {
     controller.abort();
