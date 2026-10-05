@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico"],
       manifest: {
-        name: "GeoDrishti-AI Ground Client",
-        short_name: "GeoDrishti",
-        description: "ISRO Bhuvan SRISHTI/DRISHTI Offline Field Companion",
+        name: "Drishti",
+        short_name: "Drishti",
+        description: "Watershed monitoring and offline field companion",
         theme_color: "#0d47a1",
         background_color: "#f8fafc",
         display: "standalone",

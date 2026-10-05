@@ -34,14 +34,14 @@ export default function Header({
           className="brand"
           href="#top"
           onClick={() => setActiveTab("home")}
-          aria-label="GeoDrishti home"
+          aria-label="Drishti home"
         >
           <span className="brand-mark">
             <Satellite size={21} strokeWidth={1.8} />
           </span>
           <span className="brand-copy">
             <strong>
-              GeoDrishti<span>.AI</span>
+              Drishti
             </strong>
             <small>Watershed field intelligence</small>
           </span>

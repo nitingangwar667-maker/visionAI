@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -7,12 +7,430 @@ import {
 } from "lucide-react";
 import { GUIDED_SITE_STEPS } from "../constants/guidedSiteSteps";
 
+const demoSamples = {
+  NDVI: { value: "0.68", range: "0.35 to 0.82", tone: "green" },
+  NDWI: { value: "0.24", range: "-0.12 to 0.51", tone: "blue" },
+  SMI: { value: "0.53", range: "0.21 to 0.76", tone: "teal" },
+  NDTI: { value: "0.31", range: "0.08 to 0.49", tone: "orange" },
+  BSI: { value: "0.17", range: "-0.04 to 0.38", tone: "sand" },
+  EVI: { value: "0.59", range: "0.28 to 0.77", tone: "green" },
+};
+
+const heatCells = [
+  "low", "medium", "high", "medium", "low",
+  "medium", "high", "high", "medium", "low",
+  "low", "medium", "high", "high", "medium",
+];
+
+function DemoButton({ children, selected, onClick }) {
+  return (
+    <button
+      type="button"
+      className={`tour-demo-choice${selected ? " is-selected" : ""}`}
+      aria-pressed={selected}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TourDemo({ type, onEngagementChange }) {
+  const [selection, setSelection] = useState(
+    type === "data-source"
+      ? "Satellite observation"
+      : type === "overview"
+        ? "Kolar"
+        : type === "quick-metrics"
+          ? "All sites"
+          : "NDVI",
+  );
+  const [year, setYear] = useState("2025");
+  const [baseLayer, setBaseLayer] = useState("Satellite");
+  const [cell, setCell] = useState(7);
+  const [quality, setQuality] = useState("Clear");
+  const [auditStage, setAuditStage] = useState(0);
+  const [saved, setSaved] = useState(false);
+  const sample = demoSamples[selection] ?? demoSamples.NDVI;
+
+  let content;
+  switch (type) {
+    case "navigation":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["Home", "Map", "Upload", "Monitoring", "Offline", "About"].map(
+              (item) => (
+                <DemoButton
+                  key={item}
+                  selected={selection === item}
+                  onClick={() => setSelection(item)}
+                >
+                  {item}
+                </DemoButton>
+              ),
+            )}
+          </div>
+          <p className="tour-demo-result">
+            {selection} selected in this walkthrough preview.
+          </p>
+        </>
+      );
+      break;
+    case "preset":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["Kolar", "Doddaballapur", "Ramanagara"].map((place) => (
+              <DemoButton
+                key={place}
+                selected={selection === place}
+                onClick={() => setSelection(place)}
+              >
+                {place}
+              </DemoButton>
+            ))}
+          </div>
+          <p className="tour-demo-result">Sample area: {selection}</p>
+        </>
+      );
+      break;
+    case "map-point":
+    case "map-index":
+    case "heatmap-reading":
+      content = (
+        <>
+          {type !== "map-point" && (
+            <div className="tour-demo-choices">
+              {Object.keys(demoSamples).map((index) => (
+                <DemoButton
+                  key={index}
+                  selected={selection === index}
+                  onClick={() => setSelection(index)}
+                >
+                  {index}
+                </DemoButton>
+              ))}
+            </div>
+          )}
+          <div className={`tour-demo-map ${sample.tone}`}>
+            <div className="tour-demo-heat-cells" aria-label="Sample heatmap">
+              {heatCells.map((level, index) => (
+                <button
+                  type="button"
+                  key={index}
+                  className={`heat-${level}${cell === index ? " is-picked" : ""}`}
+                  aria-label={`Sample ${level} index cell ${index + 1}`}
+                  aria-pressed={cell === index}
+                  onClick={() => setCell(index)}
+                />
+              ))}
+            </div>
+            <span className="tour-demo-map-label">Illustrative sample only</span>
+          </div>
+          <p className="tour-demo-result">
+            {selection} · {heatCells[cell]} sample cell · value {sample.value} ·
+            {" "}range {sample.range}
+          </p>
+        </>
+      );
+      break;
+    case "map-year":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["2022", "2023", "2024", "2025", "2026"].map((value) => (
+              <DemoButton
+                key={value}
+                selected={year === value}
+                onClick={() => setYear(value)}
+              >
+                {value}
+              </DemoButton>
+            ))}
+          </div>
+          <p className="tour-demo-result">
+            Previewing the illustrative {year} sample. This is not live imagery.
+          </p>
+        </>
+      );
+      break;
+    case "base-layer":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["Satellite", "Outdoors", "OpenStreetMap", "Bhuvan"].map(
+              (layer) => (
+                <DemoButton
+                  key={layer}
+                  selected={baseLayer === layer}
+                  onClick={() => setBaseLayer(layer)}
+                >
+                  {layer}
+                </DemoButton>
+              ),
+            )}
+          </div>
+          <div className={`tour-demo-layer-preview layer-${baseLayer.toLowerCase()}`}>
+            <span>{baseLayer} style preview</span>
+          </div>
+          <p className="tour-demo-result">
+            Style choice is local to this demo; no map tiles are requested.
+          </p>
+        </>
+      );
+      break;
+    case "quick-metrics":
+    case "overview":
+    case "monitoring-index":
+      content = (
+        <>
+          {(type === "overview" || type === "quick-metrics") && (
+            <div className="tour-demo-choices">
+              {(type === "overview"
+                ? ["Kolar", "Tumakuru", "Ramanagara"]
+                : ["All sites", "High priority", "Recently updated"]
+              ).map((item) => (
+                <DemoButton
+                  key={item}
+                  selected={selection === item}
+                  onClick={() => setSelection(item)}
+                >
+                  {item}
+                </DemoButton>
+              ))}
+            </div>
+          )}
+          {type === "monitoring-index" && (
+            <div className="tour-demo-choices">
+              {Object.keys(demoSamples).map((index) => (
+                <DemoButton
+                  key={index}
+                  selected={selection === index}
+                  onClick={() => setSelection(index)}
+                >
+                  {index}
+                </DemoButton>
+              ))}
+            </div>
+          )}
+          <div className="tour-demo-metrics">
+            <div>
+              <strong>
+                {type === "overview"
+                  ? selection === "Kolar" ? "34" : selection === "Tumakuru" ? "27" : "19"
+                  : type === "quick-metrics"
+                    ? selection === "All sites" ? "80" : selection === "High priority" ? "8" : "14"
+                    : sample.value}
+              </strong>
+              <span>
+                {type === "monitoring-index" ? `${selection} sample` : selection}
+              </span>
+            </div>
+            <div>
+              <strong>{type === "quick-metrics" ? "5" : "12"}</strong>
+              <span>{type === "quick-metrics" ? "queued examples" : "illustrative sites"}</span>
+            </div>
+            <div>
+              <strong>{type === "overview" ? "3" : "2"}</strong>
+              <span>sample alerts</span>
+            </div>
+          </div>
+          <p className="tour-demo-result">
+            {type === "monitoring-index"
+              ? `${selection} is a ${selection === "NDWI" ? "water" : "surface"} indicator; example only.`
+              : "Example dashboard values only — not live site records."}
+          </p>
+        </>
+      );
+      break;
+    case "trend":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {Object.keys(demoSamples).map((index) => (
+              <DemoButton
+                key={index}
+                selected={selection === index}
+                onClick={() => setSelection(index)}
+              >
+                {index}
+              </DemoButton>
+            ))}
+          </div>
+          <div className="tour-demo-chart" aria-label={`${selection} illustrative annual trend`}>
+            {[36, 52, 44, 73, 62].map((height, index) => (
+              <div className="tour-demo-bar-wrap" key={index}>
+                <span style={{ height: `${height}%` }} />
+                <small>{2022 + index}</small>
+              </div>
+            ))}
+          </div>
+          <p className="tour-demo-result">
+            Illustrative {selection} trend · sample values, not observations.
+          </p>
+        </>
+      );
+      break;
+    case "camera":
+    case "quality":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["Clear", "Blurry", "Too dark", "Glare"].map((value) => (
+              <DemoButton
+                key={value}
+                selected={quality === value}
+                onClick={() => setQuality(value)}
+              >
+                {value}
+              </DemoButton>
+            ))}
+          </div>
+          <div className={`tour-demo-photo quality-${quality.toLowerCase().replace(" ", "-")}`}>
+            <span aria-hidden="true" className="tour-demo-photo-mark" />
+            <strong>{quality === "Clear" ? "Sample photo preview" : `${quality} example`}</strong>
+          </div>
+          <p className="tour-demo-result">
+            {quality === "Clear"
+              ? "Looks usable in this example. No camera is opened."
+              : `${quality} example: the real app suggests a retake but does not block capture.`}
+          </p>
+        </>
+      );
+      break;
+    case "audit":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            <DemoButton selected={auditStage === 1} onClick={() => setAuditStage(1)}>
+              Simulate detected object
+            </DemoButton>
+            <DemoButton selected={auditStage === 2} onClick={() => setAuditStage(2)}>
+              Simulate no detection
+            </DemoButton>
+            <DemoButton selected={auditStage === 3} onClick={() => setAuditStage(3)}>
+              Simulate offline save
+            </DemoButton>
+          </div>
+          <p className="tour-demo-result">
+            {auditStage === 1
+              ? "Demo result: sample structure recognized · review details · PDF preview ready."
+              : auditStage === 2
+                ? "Demo result: no object recognized · image remains available to review."
+                : auditStage === 3
+                  ? "Demo result: saved to a temporary walkthrough queue."
+                  : "Choose a sample outcome to see what happens next."}
+          </p>
+        </>
+      );
+      break;
+    case "vault":
+    case "sync":
+      content = (
+        <>
+          <div className="tour-demo-metrics">
+            <div><strong>{saved ? "4" : "3"}</strong><span>demo items queued</span></div>
+            <div><strong>{saved ? "Saved" : "Ready"}</strong><span>local preview</span></div>
+          </div>
+          <div className="tour-demo-choices">
+            <DemoButton selected={saved} onClick={() => setSaved(!saved)}>
+              {saved ? "Remove demo item" : "Add demo item"}
+            </DemoButton>
+            <span className="tour-demo-result">
+              {type === "sync"
+                ? "This control only changes the preview count; it never syncs."
+                : "Sample queue only; your real offline records are untouched."}
+            </span>
+          </div>
+        </>
+      );
+      break;
+    case "data-source":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["Satellite observation", "Coordinate estimate"].map((source) => (
+              <DemoButton
+                key={source}
+                selected={selection === source}
+                onClick={() => setSelection(source)}
+              >
+                {source}
+              </DemoButton>
+            ))}
+          </div>
+          <p className="tour-demo-result">
+            {selection === "Satellite observation"
+              ? "Satellite observation includes a scene/year source label."
+              : `${selection}: screening estimate only, not a measured pixel.`}
+          </p>
+        </>
+      );
+      break;
+    case "about":
+      content = (
+        <>
+          <div className="tour-demo-choices">
+            {["What is Drishti?", "What does NDVI mean?", "Where are photos saved?"].map(
+              (question) => (
+                <DemoButton
+                  key={question}
+                  selected={selection === question}
+                  onClick={() => setSelection(question)}
+                >
+                  {question}
+                </DemoButton>
+              ),
+            )}
+          </div>
+          <p className="tour-demo-result">
+            {selection === "What does NDVI mean?"
+              ? "NDVI is an indicator of vegetation greenness derived from red and near-infrared reflectance."
+              : selection === "Where are photos saved?"
+                ? "Online audits are sent for processing; offline entries remain in this browser until you choose to sync."
+                : "Drishti helps explore watershed indicators and field audit workflows."}
+          </p>
+        </>
+      );
+      break;
+    default:
+      content = (
+        <p className="tour-demo-result">
+          Use the walkthrough controls to explore this sample feature.
+        </p>
+      );
+  }
+
+  return (
+    <div
+      className="tour-demo"
+      aria-label="Interactive walkthrough demo"
+      onPointerEnter={() => onEngagementChange(true)}
+      onPointerLeave={() => onEngagementChange(false)}
+      onFocusCapture={() => onEngagementChange(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          onEngagementChange(false);
+        }
+      }}
+    >
+      <div className="tour-demo-heading">
+        <span>TRY A DEMO</span>
+        <span>Illustrative · local only</span>
+      </div>
+      {content}
+    </div>
+  );
+}
+
 export default function GuidedSiteTour({
   active,
   stepIndex,
   onStepChange,
   onClose,
 }) {
+  const [demoPaused, setDemoPaused] = useState(false);
   const step = GUIDED_SITE_STEPS[stepIndex];
   const Icon = step?.icon;
 
@@ -54,6 +472,7 @@ export default function GuidedSiteTour({
   useEffect(() => {
     if (
       !active ||
+      demoPaused ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
       return undefined;
@@ -64,16 +483,16 @@ export default function GuidedSiteTour({
       } else {
         onClose();
       }
-    }, 6000);
+    }, 15000);
     return () => window.clearTimeout(timer);
-  }, [active, onClose, onStepChange, stepIndex]);
+  }, [active, demoPaused, onClose, onStepChange, stepIndex]);
 
   if (!active || !step) return null;
 
   return (
     <div className="site-tour-overlay" role="presentation">
       <section
-        className="site-tour-card"
+        className={`site-tour-card${demoPaused ? " demo-paused" : ""}`}
         role="dialog"
         aria-modal="false"
         aria-labelledby="site-tour-title"
@@ -102,9 +521,16 @@ export default function GuidedSiteTour({
             <p id="site-tour-description">{step.description}</p>
           </div>
         </div>
+        {step.demo && (
+          <TourDemo
+            key={`${stepIndex}-${step.demo}`}
+            type={step.demo}
+            onEngagementChange={setDemoPaused}
+          />
+        )}
         <p className="site-tour-safety">
-          The guide highlights features only. It will not change locations,
-          capture photos, submit audits, sync records, or delete data.
+          Demo actions affect only this preview. They will not change the live
+          map, open the camera, submit audits, sync records, or delete data.
         </p>
         <div className="site-tour-footer">
           <div className="site-tour-progress" aria-hidden="true">
@@ -141,7 +567,9 @@ export default function GuidedSiteTour({
           </div>
         </div>
         <span className="sr-only">
-          Step changes automatically. Use Back or Next to control the tour.
+          Step changes automatically after 15 seconds unless reduced motion is
+          enabled. Interacting with the demo pauses the timer. Use Back or Next
+          to control the tour.
         </span>
       </section>
     </div>

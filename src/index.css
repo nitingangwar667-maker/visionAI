@@ -1801,6 +1801,7 @@ select:focus-visible {
   right: max(22px, env(safe-area-inset-right));
   bottom: max(22px, env(safe-area-inset-bottom));
   width: min(410px, calc(100vw - 32px));
+  max-height: calc(100dvh - 44px);
   padding: 17px;
   color: #e6eff7;
   background:
@@ -1810,7 +1811,12 @@ select:focus-visible {
   border-radius: 16px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
   pointer-events: auto;
+  overflow-y: auto;
   animation: tour-content-enter 300ms ease both;
+}
+
+.site-tour-card.demo-paused .site-tour-progress span {
+  animation-play-state: paused;
 }
 
 .site-tour-topline,
@@ -1884,6 +1890,257 @@ select:focus-visible {
   line-height: 1.6;
 }
 
+.tour-demo {
+  margin-top: 11px;
+  padding: 10px;
+  background: rgba(5, 13, 21, 0.58);
+  border: 1px solid rgba(134, 192, 195, 0.18);
+  border-radius: 11px;
+}
+
+.tour-demo-heading,
+.tour-demo-choices,
+.tour-demo-metrics {
+  display: flex;
+  align-items: center;
+}
+
+.tour-demo-heading {
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #87d6c8;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.tour-demo-heading span:last-child {
+  color: #8e9eac;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.tour-demo-choices {
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tour-demo-choice {
+  min-height: 26px;
+  padding: 4px 8px;
+  color: #bac8d4;
+  background: rgba(125, 151, 174, 0.08);
+  border: 1px solid rgba(125, 151, 174, 0.17);
+  border-radius: 7px;
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.tour-demo-choice:hover,
+.tour-demo-choice.is-selected {
+  color: #dffbf3;
+  background: rgba(67, 162, 149, 0.2);
+  border-color: rgba(117, 223, 199, 0.48);
+}
+
+.tour-demo-result {
+  margin: 8px 0 0;
+  color: #bac8d4;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.tour-demo-map {
+  position: relative;
+  display: grid;
+  min-height: 98px;
+  margin-top: 8px;
+  place-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(32deg, transparent 46%, rgba(222, 233, 222, 0.13) 47%, transparent 49%),
+    linear-gradient(125deg, transparent 40%, rgba(222, 233, 222, 0.1) 41%, transparent 43%),
+    radial-gradient(ellipse at 45% 55%, rgba(45, 102, 71, 0.82), rgba(27, 54, 48, 0.9) 55%, #17292d);
+  border: 1px solid rgba(149, 187, 171, 0.2);
+  border-radius: 8px;
+}
+
+.tour-demo-map.blue {
+  background:
+    linear-gradient(32deg, transparent 46%, rgba(222, 233, 222, 0.13) 47%, transparent 49%),
+    radial-gradient(ellipse at 52% 54%, rgba(58, 143, 174, 0.82), rgba(27, 54, 64, 0.9) 58%, #17292d);
+}
+
+.tour-demo-map.orange,
+.tour-demo-map.sand {
+  background:
+    linear-gradient(32deg, transparent 46%, rgba(222, 233, 222, 0.13) 47%, transparent 49%),
+    radial-gradient(ellipse at 52% 54%, rgba(173, 112, 61, 0.82), rgba(64, 55, 41, 0.9) 58%, #17292d);
+}
+
+.tour-demo-heat-cells {
+  display: grid;
+  width: 75%;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  transform: rotate(-8deg);
+}
+
+.tour-demo-heat-cells button {
+  aspect-ratio: 1.35;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.tour-demo-heat-cells .heat-low {
+  background: rgba(59, 130, 246, 0.65);
+}
+
+.tour-demo-heat-cells .heat-medium {
+  background: rgba(250, 204, 21, 0.74);
+}
+
+.tour-demo-heat-cells .heat-high {
+  background: rgba(239, 68, 68, 0.78);
+}
+
+.tour-demo-heat-cells button.is-picked {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+
+.tour-demo-map-label {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  color: #e8f3ed;
+  font-size: 7px;
+  text-shadow: 0 1px 4px #000;
+}
+
+.tour-demo-layer-preview {
+  display: grid;
+  min-height: 55px;
+  margin-top: 8px;
+  place-items: center;
+  color: #e6eff7;
+  background: linear-gradient(120deg, #24433f, #526d49 48%, #324d61);
+  border-radius: 7px;
+  font-size: 9px;
+}
+
+.tour-demo-layer-preview.layer-openstreetmap {
+  color: #374151;
+  background: repeating-linear-gradient(0deg, #e2e5dc 0 12px, #cbd3c5 13px 14px);
+}
+
+.tour-demo-layer-preview.layer-outdoors {
+  background: linear-gradient(130deg, #294b3b, #66815d 45%, #637e91);
+}
+
+.tour-demo-layer-preview.layer-bhuvan {
+  background: linear-gradient(135deg, #594c39, #556a43 48%, #345351);
+}
+
+.tour-demo-metrics {
+  gap: 6px;
+}
+
+.tour-demo-metrics > div {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: 7px;
+  background: rgba(126, 158, 170, 0.08);
+  border: 1px solid rgba(126, 158, 170, 0.12);
+  border-radius: 7px;
+}
+
+.tour-demo-metrics strong {
+  color: #d7f3e9;
+  font-size: 12px;
+}
+
+.tour-demo-metrics span {
+  overflow: hidden;
+  color: #91a2b1;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tour-demo-chart {
+  display: flex;
+  height: 74px;
+  align-items: flex-end;
+  justify-content: space-around;
+  margin-top: 8px;
+  padding: 6px 8px 0;
+  background: linear-gradient(180deg, rgba(75, 154, 144, 0.09), transparent);
+  border-bottom: 1px solid rgba(139, 166, 181, 0.28);
+}
+
+.tour-demo-bar-wrap {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.tour-demo-bar-wrap span {
+  width: 18px;
+  min-height: 8px;
+  background: linear-gradient(180deg, #a0e8c7, #4eb4b5);
+  border-radius: 3px 3px 0 0;
+}
+
+.tour-demo-bar-wrap small {
+  color: #91a2b1;
+  font-size: 7px;
+}
+
+.tour-demo-photo {
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 8px;
+  gap: 3px;
+  color: #dce8ed;
+  background:
+    linear-gradient(160deg, transparent 52%, rgba(113, 153, 118, 0.56) 53%),
+    linear-gradient(20deg, #293943, #526d67 55%, #a08e65);
+  border: 1px solid rgba(149, 187, 171, 0.2);
+  border-radius: 7px;
+  font-size: 8px;
+}
+
+.tour-demo-photo.quality-blurry {
+  filter: blur(1.3px);
+}
+
+.tour-demo-photo.quality-too-dark {
+  filter: brightness(0.45);
+}
+
+.tour-demo-photo.quality-glare {
+  filter: brightness(1.45) saturate(0.55);
+}
+
+.tour-demo-photo-mark {
+  width: 14px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+}
+
 .site-tour-safety {
   margin: 11px 0 13px;
   padding: 8px 10px;
@@ -1913,7 +2170,7 @@ select:focus-visible {
   background: linear-gradient(90deg, #4eb4b5, #a0e8c7);
   transform: scaleX(0);
   transform-origin: left;
-  animation: tour-step-fill 6s linear forwards;
+  animation: tour-step-fill 15s linear forwards;
 }
 
 .site-tour-actions {
@@ -1956,7 +2213,9 @@ select:focus-visible {
     right: 12px;
     bottom: calc(78px + env(safe-area-inset-bottom));
     width: calc(100vw - 24px);
+    max-height: calc(100dvh - 100px - env(safe-area-inset-bottom));
     padding: 14px;
+    overflow-y: auto;
   }
 
   .site-tour-content p {
@@ -2767,6 +3026,59 @@ select:focus-visible {
   font-size: 8px;
 }
 
+.camera-quality-message {
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  border: 1px solid;
+  border-radius: 9px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.camera-quality-message.camera-quality-help {
+  color: #68766b;
+  background: #f7f9f4;
+  border-color: #e3e9df;
+}
+
+.camera-quality-message.warning {
+  color: #895e27;
+  background: #fff8e9;
+  border-color: #eddbb4;
+}
+
+.camera-quality-message.passed {
+  color: #47714a;
+  background: #f0f7ec;
+  border-color: #d9e8d2;
+}
+
+.camera-error-actions {
+  display: grid;
+  justify-items: start;
+}
+
+.camera-retry-button {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  margin-top: 7px;
+  padding: 0 10px;
+  gap: 6px;
+  color: #426b47;
+  background: #fff;
+  border: 1px solid #dce7d8;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.upload-camera-panel button:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.55);
+  opacity: 0.72;
+}
+
 .monitoring-page > .glass-panel,
 .monitoring-page > .analytics-focus {
   width: 100%;
@@ -3229,7 +3541,7 @@ select:focus-visible {
   }
 }
 
-/* GreenHeart-inspired nature-first visual language for GeoDrishti */
+/* GreenHeart-inspired nature-first visual language for Drishti */
 :root {
   color: #24342a;
   background: #f4f6ef;

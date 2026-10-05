@@ -302,9 +302,8 @@ export default function BhuvanMapCard({
       map.createPane("watershed-boundary");
       map.getPane("watershed-boundary").style.zIndex = "470";
 
-      L.control
-        .layers(baseLayers)
-        .addTo(map);
+      const baseLayerControl = L.control.layers(baseLayers).addTo(map);
+      baseLayerControl.getContainer().setAttribute("data-tour", "base-map-layers");
 
       // Watershed Geofence Boundary
       const circle = L.circle(initialCenter, {
@@ -453,7 +452,7 @@ export default function BhuvanMapCard({
       </div>
 
       <div className="map-layer-toolbar">
-        <label className="map-layer-select">
+        <label className="map-layer-select" data-tour="map-index-selector">
           <span><IndexIcon size={15} /> Index layer</span>
           <select
             aria-label="Satellite index heatmap"
@@ -465,7 +464,7 @@ export default function BhuvanMapCard({
             ))}
           </select>
         </label>
-        <label className="map-layer-select map-year-select">
+        <label className="map-layer-select map-year-select" data-tour="map-year-selector">
           <span>Observation year</span>
           <select
             aria-label="Heatmap observation year"
@@ -477,7 +476,7 @@ export default function BhuvanMapCard({
             ))}
           </select>
         </label>
-        <div className="map-layer-summary">
+        <div className="map-layer-summary" data-tour="map-layer-summary">
           <span className={`map-observation-status ${isHeatmapLoading ? "is-loading" : observedCellCount ? "is-ready" : "is-unavailable"}`}>
             {isHeatmapLoading ? <LoaderCircle size={13} className="map-spin" /> : <Satellite size={13} />}
             {isHeatmapLoading
@@ -570,7 +569,7 @@ export default function BhuvanMapCard({
       </div>
 
       {observedCellCount > 0 && (
-        <section className="heat-details" aria-label="Heatmap location details">
+        <section className="heat-details" aria-label="Heatmap location details" data-tour="heat-details">
           <div className="heat-details-heading">
             <div>
               <span className="heat-details-kicker">LOCATION INSIGHT</span>

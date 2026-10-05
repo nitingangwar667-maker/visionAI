@@ -41,6 +41,8 @@ export default function App() {
   });
 
   const [photoBlob, setPhotoBlob] = useState(null);
+  const [photoMetadata, setPhotoMetadata] = useState(null);
+  const [auditImageResult, setAuditImageResult] = useState(null);
   const [status, setStatus] = useState({ type: "", text: "" });
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -100,6 +102,12 @@ export default function App() {
       } catch (err) {
         if (!isCancelled) {
           console.warn("Satellite band extraction exception:", err);
+          setStatus({
+            type: "error",
+            text: err instanceof Error
+              ? err.message
+              : "Could not reach the Drishti API. Check the backend deployment.",
+          });
         }
       } finally {
         if (!isCancelled) setIsIndicesLoading(false);
@@ -202,11 +210,17 @@ export default function App() {
     setIsTourActive(false);
   }, []);
 
+  const handlePhotoCaptured = useCallback((blob, metadata) => {
+    setPhotoBlob(blob);
+    setPhotoMetadata(metadata);
+    setAuditImageResult(null);
+  }, []);
+
   const handleAuditSubmission = async () => {
     if (!photoBlob) {
       setStatus({
         type: "error",
-        text: "Snap an asset photo to generate the official signed PDF certificate.",
+        text: "Capture an asset photo to generate the field audit report.",
       });
       return;
     }
@@ -216,7 +230,8 @@ export default function App() {
       lon: coords.longitude,
       blob: photoBlob,
       is_mock: false,
-      timestamp: new Date().toISOString(),
+      captured_at: photoMetadata?.capturedAt ?? new Date().toISOString(),
+      image_quality_variance: photoMetadata?.laplacianVariance ?? null,
     };
 
     setIsProcessing(true);
@@ -225,16 +240,17 @@ export default function App() {
       try {
         setStatus({
           type: "loading",
-          text: "Running YOLOv8 structure identification & compiling signed PDF...",
+          text: "Checking the field image and compiling the audit report...",
         });
         const summary = await uploadFieldAudit(payload);
         if (summary) {
           setAuditSummary(summary);
+          setAuditImageResult(summary);
           confetti({ particleCount: 50, spread: 60, origin: { y: 0.85 } });
         }
         setStatus({
           type: "success",
-          text: "Verified! Signed Ecological Audit PDF downloaded.",
+          text: "Field audit report downloaded. Review its source labels and integrity digest.",
         });
       } catch (error) {
         setStatus({ type: "error", text: error.message });
@@ -410,8 +426,9 @@ export default function App() {
             <div className="upload-layout">
               <div className="upload-camera-panel">
                 <VisionCanvasCard
-                  onPhotoCaptured={setPhotoBlob}
+                  onPhotoCaptured={handlePhotoCaptured}
                   detections={auditSummary?.detections}
+                  analysisResult={auditImageResult}
                   isProcessing={isProcessing}
                 />
               </div>
@@ -507,7 +524,7 @@ export default function App() {
               <div>
                 <span className="eyebrow"><Globe2 size={14} /> ABOUT THE PLATFORM</span>
                 <h1>Better context for every field observation.</h1>
-                <p>GeoDrishti brings watershed mapping, satellite-derived indicators, and field documentation into one practical workspace.</p>
+                <p>Drishti brings watershed mapping, satellite-derived indicators, and field documentation into one practical workspace.</p>
               </div>
               <button className="button-primary" onClick={startGuidedTour}>
                 <BookOpen size={16} /> Take the site tour
@@ -528,7 +545,7 @@ export default function App() {
 
       <footer className="site-footer">
         <span className="site-footer-brand">
-          <Satellite size={15} /> GeoDrishti<span>.AI</span>
+          <Satellite size={15} /> Drishti
         </span>
         <span>Watershed intelligence · Field-ready insights</span>
         <button type="button" onClick={() => handleNavigation("about")}>

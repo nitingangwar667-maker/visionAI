@@ -99,53 +99,53 @@ const QUICK_QUESTIONS = [
 const CHAT_LANGUAGES = {
   en: {
     name: "English",
-    guide: "GeoDrishti guide",
+    guide: "Drishti guide",
     here: "Here to help",
     offline: "Available offline",
     close: "Close help chat",
     conversation: "Conversation",
     placeholder: "Ask about the site or your data…",
-    input: "Ask the GeoDrishti guide",
+    input: "Ask the Drishti guide",
     send: "Send message",
     map: "Map",
     monitoring: "Monitoring",
     tour: "Tour",
     disclaimer: "Site guide · Indices are screening indicators, not field measurements.",
-    welcome: "Welcome to GeoDrishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
+    welcome: "Welcome to Drishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
     prompts: QUICK_QUESTIONS,
   },
   hi: {
     name: "हिन्दी",
-    guide: "GeoDrishti सहायक",
+    guide: "Drishti सहायक",
     here: "मदद के लिए उपलब्ध",
     offline: "ऑफ़लाइन उपलब्ध",
     close: "सहायता चैट बंद करें",
     conversation: "बातचीत",
     placeholder: "साइट या अपने डेटा के बारे में पूछें…",
-    input: "GeoDrishti सहायक से पूछें",
+    input: "Drishti सहायक से पूछें",
     send: "संदेश भेजें",
     map: "मानचित्र",
     monitoring: "निगरानी",
     tour: "परिचय",
     disclaimer: "साइट मार्गदर्शिका · सूचक केवल संकेत हैं, जमीनी माप नहीं।",
-    welcome: "GeoDrishti में आपका स्वागत है। मैं साइट इस्तेमाल करने और उपलब्ध उपग्रह रीडिंग समझने में मदद कर सकता हूँ।",
+    welcome: "Drishti में आपका स्वागत है। मैं साइट इस्तेमाल करने और उपलब्ध उपग्रह रीडिंग समझने में मदद कर सकता हूँ।",
     prompts: ["मेरा नया डेटा क्या बताता है?", "हीटमैप के रंग समझाएँ", "फील्ड फोटो कहाँ अपलोड करूँ?"],
   },
   kn: {
     name: "ಕನ್ನಡ",
-    guide: "GeoDrishti ಮಾರ್ಗದರ್ಶಿ",
+    guide: "Drishti ಮಾರ್ಗದರ್ಶಿ",
     here: "ಸಹಾಯಕ್ಕೆ ಲಭ್ಯ",
     offline: "ಆಫ್‌ಲೈನ್‌ನಲ್ಲೂ ಲಭ್ಯ",
     close: "ಸಹಾಯ ಚಾಟ್ ಮುಚ್ಚಿ",
     conversation: "ಸಂಭಾಷಣೆ",
     placeholder: "ಸೈಟ್ ಅಥವಾ ನಿಮ್ಮ ಡೇಟಾ ಬಗ್ಗೆ ಕೇಳಿ…",
-    input: "GeoDrishti ಮಾರ್ಗದರ್ಶಿಯನ್ನು ಕೇಳಿ",
+    input: "Drishti ಮಾರ್ಗದರ್ಶಿಯನ್ನು ಕೇಳಿ",
     send: "ಸಂದೇಶ ಕಳುಹಿಸಿ",
     map: "ನಕ್ಷೆ",
     monitoring: "ಮೇಲ್ವಿಚಾರಣೆ",
     tour: "ಪರಿಚಯ",
     disclaimer: "ಸೈಟ್ ಮಾರ್ಗದರ್ಶಿ · ಸೂಚ್ಯಂಕಗಳು ಕೇವಲ ಸೂಚನೆಗಳು, ಕ್ಷೇತ್ರದ ಅಳತೆಗಳಲ್ಲ.",
-    welcome: "GeoDrishti ಗೆ ಸ್ವಾಗತ. ಸೈಟ್ ಬಳಸಲು ಮತ್ತು ಲಭ್ಯವಿರುವ ಉಪಗ್ರಹ ಓದುಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ನಾನು ಸಹಾಯ ಮಾಡುತ್ತೇನೆ.",
+    welcome: "Drishti ಗೆ ಸ್ವಾಗತ. ಸೈಟ್ ಬಳಸಲು ಮತ್ತು ಲಭ್ಯವಿರುವ ಉಪಗ್ರಹ ಓದುಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ನಾನು ಸಹಾಯ ಮಾಡುತ್ತೇನೆ.",
     prompts: ["ನನ್ನ ಇತ್ತೀಚಿನ ಡೇಟಾ ಏನು ಹೇಳುತ್ತದೆ?", "ಹೀಟ್‌ಮ್ಯಾಪ್ ಬಣ್ಣಗಳನ್ನು ವಿವರಿಸಿ", "ಕ್ಷೇತ್ರದ ಫೋಟೋವನ್ನು ಎಲ್ಲಿ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಿ?"],
   },
 };
@@ -282,8 +282,8 @@ function localizedAnswerQuestion(question, context, language) {
   }
   if (words.help.test(text)) {
     return isHindi
-      ? "GeoDrishti में Home पर कार्यक्षेत्र, Map पर जलागम और हीटमैप, Monitoring पर छह पर्यावरणीय सूचकांक, Upload पर फील्ड ऑडिट, Offline vault में स्थानीय रिकॉर्ड और About में प्लेटफ़ॉर्म परिचय मिलता है। मैं अभी लोड किए गए डेटा को भी समझा सकता हूँ।"
-      : "GeoDrishti ನಲ್ಲಿ Home ಕಾರ್ಯಕ್ಷೇತ್ರ, Map ಜಲಾನಯನ ಮತ್ತು ಹೀಟ್‌ಮ್ಯಾಪ್, Monitoring ಆರು ಪರಿಸರ ಸೂಚ್ಯಂಕಗಳು, Upload ಕ್ಷೇತ್ರ ಆಡಿಟ್, Offline vault ಸ್ಥಳೀಯ ದಾಖಲೆಗಳು ಮತ್ತು About ವೇದಿಕೆಯ ಪರಿಚಯವನ್ನು ಒದಗಿಸುತ್ತದೆ. ಲೋಡ್ ಆಗಿರುವ ಡೇಟಾವನ್ನೂ ವಿವರಿಸಬಹುದು.";
+      ? "Drishti में Home पर कार्यक्षेत्र, Map पर जलागम और हीटमैप, Monitoring पर छह पर्यावरणीय सूचकांक, Upload पर फील्ड ऑडिट, Offline vault में स्थानीय रिकॉर्ड और About में प्लेटफ़ॉर्म परिचय मिलता है। मैं अभी लोड किए गए डेटा को भी समझा सकता हूँ।"
+      : "Drishti ನಲ್ಲಿ Home ಕಾರ್ಯಕ್ಷೇತ್ರ, Map ಜಲಾನಯನ ಮತ್ತು ಹೀಟ್‌ಮ್ಯಾಪ್, Monitoring ಆರು ಪರಿಸರ ಸೂಚ್ಯಂಕಗಳು, Upload ಕ್ಷೇತ್ರ ಆಡಿಟ್, Offline vault ಸ್ಥಳೀಯ ದಾಖಲೆಗಳು ಮತ್ತು About ವೇದಿಕೆಯ ಪರಿಚಯವನ್ನು ಒದಗಿಸುತ್ತದೆ. ಲೋಡ್ ಆಗಿರುವ ಡೇಟಾವನ್ನೂ ವಿವರಿಸಬಹುದು.";
   }
   if (words.latest.test(text)) {
     const records = context.auditSummary?.indices ?? [];
@@ -389,14 +389,14 @@ function answerQuestion(question, context, language = "en") {
   const text = question.toLowerCase();
 
   if (/^(hi|hello|hey|good morning|good afternoon)\b/.test(text)) {
-    return `Hello! I can explain GeoDrishti’s map, satellite indices, field audits, offline vault, or the current readings. You’re on ${TAB_NAMES[context.activeTab] ?? "the site"}. What would you like to understand?`;
+    return `Hello! I can explain Drishti’s map, satellite indices, field audits, offline vault, or the current readings. You’re on ${TAB_NAMES[context.activeTab] ?? "the site"}. What would you like to understand?`;
   }
   if (/tour|beginner|getting started|how do i start/.test(text)) {
     context.onStartTour();
     return "I’ve started the guided platform tour. It walks through navigation, the watershed map, monitoring, field audits, and offline records without submitting or syncing anything.";
   }
-  if (/what can you|what do you know|help|features|what does this site|about geodrishti/.test(text)) {
-    return "GeoDrishti brings six workflows together:\n\n• Home: location and workspace overview.\n• Map: select a watershed, inspect a colour-coded satellite-index grid, and read sampled-pixel summaries.\n• Monitoring: compare annual NDVI, NDWI, SMI, NDTI, EVI, and BSI values and their source labels.\n• Upload: capture a field-asset photo and submit an audit when online.\n• Offline vault: keep queued field records on this device and sync them when connected.\n• About: platform context and a beginner guide.\n\nI can also explain your currently loaded readings.";
+  if (/what can you|what do you know|help|features|what does this site|about (geo)?drishti/.test(text)) {
+    return "Drishti brings six workflows together:\n\n• Home: location and workspace overview.\n• Map: select a watershed, inspect a colour-coded satellite-index grid, and read sampled-pixel summaries.\n• Monitoring: compare annual NDVI, NDWI, SMI, NDTI, EVI, and BSI values and their source labels.\n• Upload: capture a field-asset photo and submit an audit when online.\n• Offline vault: keep queued field records on this device and sync them when connected.\n• About: platform context and a beginner guide.\n\nI can also explain your currently loaded readings.";
   }
   if (/heat.?map|heat map|colour|color|red|green|yellow|pixel|range|low|medium|moderate|high/.test(text) && /map|heat|colour|color|pixel|low|medium|moderate|high|red|green|yellow/.test(text)) {
     return mapReply(context.coords, context.heatmapSummary);
@@ -462,7 +462,7 @@ export default function GeoDrishtiAssistant({
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "Welcome to GeoDrishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
+      text: "Welcome to Drishti. I can guide you around the site and explain the loaded satellite readings. Ask me about a feature or your latest data.",
     },
   ]);
   const messagesEndRef = useRef(null);
@@ -507,7 +507,7 @@ export default function GeoDrishtiAssistant({
       {isOpen && (
         <section
           className="geo-chat-panel"
-          aria-label="GeoDrishti help chat"
+          aria-label="Drishti help chat"
           aria-live="polite"
         >
           <header className="geo-chat-header">
@@ -583,11 +583,11 @@ export default function GeoDrishtiAssistant({
       <button
         type="button"
         className={`geo-assistant-launcher ${isOpen ? "is-open" : ""}`}
-        aria-label={isOpen ? "Close GeoDrishti guide" : "Chat with the GeoDrishti guide"}
+        aria-label={isOpen ? "Close Drishti guide" : "Chat with the Drishti guide"}
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
       >
-        {isOpen ? <X size={21} /> : <><MessageCircle size={20} /><span>Ask GeoDrishti</span></>}
+        {isOpen ? <X size={21} /> : <><MessageCircle size={20} /><span>Ask Drishti</span></>}
       </button>
     </div>
   );

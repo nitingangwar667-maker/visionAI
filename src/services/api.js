@@ -1,4 +1,8 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const API_BASE_URL = (
+  configuredApiBaseUrl ||
+  (import.meta.env.DEV ? "http://127.0.0.1:8000" : window.location.origin)
+).replace(/\/+$/, "");
 
 // NEW: Dynamically fetch 6 multi-spectral indices by coordinate
 export async function fetchWatershedIndices(
@@ -34,6 +38,11 @@ export async function fetchWatershedIndices(
   } catch (err) {
     if (requestSignal?.aborted) {
       throw err;
+    }
+    if (import.meta.env.PROD) {
+      throw new Error(
+        "Could not reach the Drishti API. Verify VITE_API_BASE_URL and the backend deployment.",
+      );
     }
     console.warn("Using coordinate-derived local telemetry:", err.message);
     const factor = Math.abs(Math.sin(lat * 12.9 + lon * 78.2));
@@ -113,6 +122,13 @@ export async function uploadFieldAudit(
   formData.append("latitude", payload.lat);
   formData.append("longitude", payload.lon);
   formData.append("is_mock", payload.is_mock);
+  formData.append("captured_at", payload.captured_at || payload.timestamp || "");
+  if (Number.isFinite(payload.image_quality_variance)) {
+    formData.append(
+      "image_quality_variance",
+      payload.image_quality_variance.toString(),
+    );
+  }
   formData.append("asset_name", payload.asset_name || "Check Dam");
   formData.append("image", payload.blob, "field_asset.jpg");
 
@@ -134,7 +150,7 @@ export async function uploadFieldAudit(
     const downloadUrl = URL.createObjectURL(pdfBlob);
     const anchor = document.createElement("a");
     anchor.href = downloadUrl;
-    anchor.download = `GeoDrishti_Audit_${payload.lat.toFixed(4)}.pdf`;
+    anchor.download = `Drishti_Audit_${payload.lat.toFixed(4)}.pdf`;
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);

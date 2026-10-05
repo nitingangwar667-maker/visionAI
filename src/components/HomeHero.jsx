@@ -82,7 +82,7 @@ export default function HomeHero({
   };
 
   return (
-    <section className="home-hero" aria-label="GeoDrishti highlights">
+    <section className="home-hero" aria-label="Drishti highlights">
       <div className="home-hero-art" aria-hidden="true">
         {slides.map((item, index) => (
           <div
