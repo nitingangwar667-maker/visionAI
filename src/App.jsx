@@ -278,13 +278,7 @@ export default function App() {
       />
 
       {activeTab === "home" && (
-        <QuickMetricsBar
-          coords={coords}
-          auditSummary={auditSummary}
-          isOnline={isOnline}
-          pendingCount={pendingCount}
-          isLoading={isIndicesLoading}
-        />
+        <QuickMetricsBar />
       )}
 
       <main className={`page-shell page-${activeTab}`}>

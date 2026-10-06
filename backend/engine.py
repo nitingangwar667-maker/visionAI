@@ -184,10 +184,11 @@ def fetch_sentinel_index_grid(
     lon: float,
     index: str,
     year: int,
-    radius_m: float = 3500.0,
-    grid_size: int = 28,
+    radius_m: float = 1000.0,
+    grid_size: int | None = None,
+    cell_size_m: float = 30.0,
 ):
-    """Sample one Sentinel-2 scene into a bounded grid for map visualization."""
+    """Sample one Sentinel-2 scene into approximately 30 m map cells."""
     band_requirements = {
         "ndvi": ("nir", "red"),
         "ndwi": ("green", "nir"),
@@ -205,6 +206,10 @@ def fetch_sentinel_index_grid(
     }
     if index not in band_requirements:
         raise ValueError(f"Unsupported index: {index}")
+    if radius_m <= 0 or cell_size_m <= 0:
+        raise ValueError("Heatmap radius and cell size must be greater than zero.")
+    if grid_size is None:
+        grid_size = math.ceil((2 * radius_m) / cell_size_m)
 
     try:
         catalog = pystac_client.Client.open(

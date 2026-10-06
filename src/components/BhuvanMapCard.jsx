@@ -255,7 +255,7 @@ export default function BhuvanMapCard({
   useEffect(() => {
     if (!mapInstanceRef.current && mapContainerRef.current) {
       const initialCenter = [WATERSHED_PRESETS[0].lat, WATERSHED_PRESETS[0].lon];
-      const map = L.map(mapContainerRef.current).setView(
+      const map = L.map(mapContainerRef.current, { zoomSnap: 0.25 }).setView(
         initialCenter,
         13,
       );
@@ -313,11 +313,12 @@ export default function BhuvanMapCard({
         dashArray: "5 5",
         fillColor: "#91d18b",
         fillOpacity: 0.07,
-        radius: 3500,
+        radius: 1000,
       })
         .addTo(map)
-        .bindPopup("3.5 km study area");
+        .bindPopup("1 km study area");
       circleRef.current = circle;
+      map.fitBounds(circle.getBounds(), { padding: [16, 16], maxZoom: 15 });
 
       // Draggable Marker
       const marker = L.marker(initialCenter, {
@@ -380,20 +381,26 @@ export default function BhuvanMapCard({
     const { bounds, grid_size: gridSize, cells } = heatmapData;
     const latitudeStep = (bounds.north - bounds.south) / gridSize;
     const longitudeStep = (bounds.east - bounds.west) / gridSize;
+    const hasObservedRange = heatmapStats.max > heatmapStats.min;
+    const heatmapRenderer = L.canvas({ padding: 0.5 });
     const layer = L.layerGroup();
     for (const cell of cells) {
       if (cell.value === null || !Number.isFinite(cell.value)) continue;
-      const ratio = (cell.value - activeIndex.min) / (activeIndex.max - activeIndex.min);
+      const ratio = hasObservedRange
+        ? (cell.value - heatmapStats.min) / (heatmapStats.max - heatmapStats.min)
+        : (cell.value - activeIndex.min) / (activeIndex.max - activeIndex.min);
+      const contrastRatio = Math.max(0, Math.min(1, 0.5 + (ratio - 0.5) * 1.6));
       const north = bounds.north - cell.row * latitudeStep;
       const south = north - latitudeStep;
       const west = bounds.west + cell.col * longitudeStep;
       const east = west + longitudeStep;
       L.rectangle([[south, west], [north, east]], {
         pane: "heatmap",
+        renderer: heatmapRenderer,
         color: "transparent",
         weight: 0,
-        fillColor: interpolateColor(activeIndex.colors, ratio),
-        fillOpacity: 0.72,
+        fillColor: interpolateColor(activeIndex.colors, contrastRatio),
+        fillOpacity: 0.55,
         interactive: true,
       })
         .bindTooltip(`${activeIndex.id.toUpperCase()} · ${cell.value.toFixed(3)}`, {
@@ -406,7 +413,7 @@ export default function BhuvanMapCard({
     layer.addTo(map);
     heatmapLayerRef.current = layer;
     return () => layer.remove();
-  }, [activeIndex, canShowHeatmap, heatmapData, mapReady]);
+  }, [activeIndex, canShowHeatmap, heatmapData, heatmapStats.max, heatmapStats.min, mapReady]);
 
   // Update map viewport when presets or coordinates change
   useEffect(() => {
@@ -504,7 +511,7 @@ export default function BhuvanMapCard({
             {isIndicesLoading ? "Updating point series · " : ""}
             {heatmapData?.acquired
               ? `Sentinel-2 · ${new Date(heatmapData.acquired).toLocaleDateString()}`
-              : "Sentinel-2 pixels · 3.5 km radius"}
+              : "30 m Sentinel-2 cells · 1 km radius"}
           </small>
         </div>
       </div>

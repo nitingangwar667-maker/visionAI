@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Satellite,
   X,
 } from "lucide-react";
 import { GUIDED_SITE_STEPS } from "../constants/guidedSiteSteps";
@@ -39,11 +40,7 @@ function TourDemo({ type, onEngagementChange }) {
   const [selection, setSelection] = useState(
     type === "data-source"
       ? "Satellite observation"
-      : type === "overview"
-        ? "Kolar"
-        : type === "quick-metrics"
-          ? "All sites"
-          : "NDVI",
+      : "NDVI",
   );
   const [year, setYear] = useState("2025");
   const [baseLayer, setBaseLayer] = useState("Satellite");
@@ -180,66 +177,49 @@ function TourDemo({ type, onEngagementChange }) {
         </>
       );
       break;
-    case "quick-metrics":
     case "overview":
+      content = (
+        <>
+          <div className="tour-demo-home-banner">
+            <span className="tour-demo-home-label">WATERSHED MONITORING</span>
+            <strong>
+              <span>SEE THE CHANGE.</span>
+              <span>SHAPE A BETTER WATERSHED.</span>
+            </strong>
+            <Satellite size={19} aria-hidden="true" />
+          </div>
+          <p className="tour-demo-result">
+            A short introduction to Drishti. Open Map or Monitoring to explore
+            the current location and satellite indicators.
+          </p>
+        </>
+      );
+      break;
     case "monitoring-index":
       content = (
         <>
-          {(type === "overview" || type === "quick-metrics") && (
-            <div className="tour-demo-choices">
-              {(type === "overview"
-                ? ["Kolar", "Tumakuru", "Ramanagara"]
-                : ["All sites", "High priority", "Recently updated"]
-              ).map((item) => (
-                <DemoButton
-                  key={item}
-                  selected={selection === item}
-                  onClick={() => setSelection(item)}
-                >
-                  {item}
-                </DemoButton>
-              ))}
-            </div>
-          )}
-          {type === "monitoring-index" && (
-            <div className="tour-demo-choices">
-              {Object.keys(demoSamples).map((index) => (
-                <DemoButton
-                  key={index}
-                  selected={selection === index}
-                  onClick={() => setSelection(index)}
-                >
-                  {index}
-                </DemoButton>
-              ))}
-            </div>
-          )}
+          <div className="tour-demo-choices">
+            {Object.keys(demoSamples).map((index) => (
+              <DemoButton
+                key={index}
+                selected={selection === index}
+                onClick={() => setSelection(index)}
+              >
+                {index}
+              </DemoButton>
+            ))}
+          </div>
           <div className="tour-demo-metrics">
+            <div><strong>{sample.value}</strong><span>{selection} sample</span></div>
+            <div><strong>12</strong><span>illustrative sites</span></div>
             <div>
-              <strong>
-                {type === "overview"
-                  ? selection === "Kolar" ? "34" : selection === "Tumakuru" ? "27" : "19"
-                  : type === "quick-metrics"
-                    ? selection === "All sites" ? "80" : selection === "High priority" ? "8" : "14"
-                    : sample.value}
-              </strong>
-              <span>
-                {type === "monitoring-index" ? `${selection} sample` : selection}
-              </span>
-            </div>
-            <div>
-              <strong>{type === "quick-metrics" ? "5" : "12"}</strong>
-              <span>{type === "quick-metrics" ? "queued examples" : "illustrative sites"}</span>
-            </div>
-            <div>
-              <strong>{type === "overview" ? "3" : "2"}</strong>
+              <strong>2</strong>
               <span>sample alerts</span>
             </div>
           </div>
           <p className="tour-demo-result">
-            {type === "monitoring-index"
-              ? `${selection} is a ${selection === "NDWI" ? "water" : "surface"} indicator; example only.`
-              : "Example dashboard values only — not live site records."}
+            {selection} is a {selection === "NDWI" ? "water" : "surface"}{" "}
+            indicator; example only.
           </p>
         </>
       );

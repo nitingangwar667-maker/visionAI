@@ -20,9 +20,9 @@ export const GUIDED_SITE_STEPS = [
     tab: "home",
     target: "home-overview",
     icon: Satellite,
-    title: "Start with your overview",
+    title: "Start with the watershed tagline",
     description:
-      "Home shows the selected location, latest readings, connection, and saved records.",
+      "The Home banner introduces Drishti’s watershed focus. Use the main navigation to explore the map, satellite indicators, field audits, and offline records.",
     demo: "overview",
   },
   {
@@ -78,15 +78,6 @@ export const GUIDED_SITE_STEPS = [
     description:
       "Use the legend and the summary below the map to read pixel values and ranges. A high index value is not always a good outcome.",
     demo: "heatmap-reading",
-  },
-  {
-    tab: "home",
-    target: "quick-metrics",
-    icon: Satellite,
-    title: "Check the live overview",
-    description:
-      "See the selected coordinates, connection, latest reading, and saved audit count.",
-    demo: "quick-metrics",
   },
   {
     tab: "monitoring",
