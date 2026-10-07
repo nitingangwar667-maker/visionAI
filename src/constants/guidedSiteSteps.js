@@ -40,7 +40,7 @@ export const GUIDED_SITE_STEPS = [
     icon: Map,
     title: "Explore the map",
     description:
-      "Click the map or drag the marker to another location. Zoom in to see index cells; select a cell to inspect its value.",
+      "Search for a place, enter coordinates, use your current location, or click the map and drag the marker. Zoom in to see index cells; select a cell to inspect its value.",
     demo: "map-point",
   },
   {

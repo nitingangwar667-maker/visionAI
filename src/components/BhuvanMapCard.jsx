@@ -2,12 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
+  Crosshair,
   Droplets,
   Layers,
   LoaderCircle,
+  MapPin,
   Mountain,
   RotateCw,
   Satellite,
+  Search,
   Sprout,
   Waves,
 } from "lucide-react";
@@ -96,6 +99,8 @@ export default function BhuvanMapCard({
   onCoordsChange,
   selectedPreset,
   onPresetChange,
+  selectedLocationName,
+  onLocationNameChange,
   auditSummary,
   isIndicesLoading,
   onHeatmapSummaryChange,
@@ -112,6 +117,13 @@ export default function BhuvanMapCard({
   const [heatmap, setHeatmap] = useState({ key: "", data: null, error: "" });
   const [mapReady, setMapReady] = useState(false);
   const [canShowHeatmap, setCanShowHeatmap] = useState(true);
+  const [placeQuery, setPlaceQuery] = useState("");
+  const [placeResults, setPlaceResults] = useState([]);
+  const [placeSearchStatus, setPlaceSearchStatus] = useState("");
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState(false);
+  const [manualPlaceName, setManualPlaceName] = useState("");
+  const [locationStatus, setLocationStatus] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
   const observedYear = [...(auditSummary?.indices ?? [])]
     .reverse()
     .find((record) => record.source === "sentinel-2")?.year;
@@ -188,7 +200,11 @@ export default function BhuvanMapCard({
           item.id === classifyIndexValue(nearestSample.value, activeIndex),
       )
     : null;
-  const callbacksRef = useRef({ onCoordsChange, onPresetChange });
+  const callbacksRef = useRef({
+    onCoordsChange,
+    onPresetChange,
+    onLocationNameChange,
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -216,8 +232,128 @@ export default function BhuvanMapCard({
   }, [coords.latitude, coords.longitude, selectedIndex, activeYear, heatmapKey]);
 
   useEffect(() => {
-    callbacksRef.current = { onCoordsChange, onPresetChange };
-  }, [onCoordsChange, onPresetChange]);
+    callbacksRef.current = {
+      onCoordsChange,
+      onPresetChange,
+      onLocationNameChange,
+    };
+  }, [onCoordsChange, onLocationNameChange, onPresetChange]);
+
+  const handlePlaceSearch = async (event) => {
+    event.preventDefault();
+    const query = placeQuery.trim();
+    if (!query) {
+      setPlaceSearchStatus("Enter a place name to search.");
+      setPlaceResults([]);
+      return;
+    }
+
+    setIsSearchingPlaces(true);
+    setPlaceSearchStatus("");
+    setLocationStatus("");
+    setPlaceResults([]);
+    try {
+      const params = new URLSearchParams({
+        format: "jsonv2",
+        q: query,
+        limit: "5",
+      });
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+      );
+      if (!response.ok) {
+        throw new Error(`Place search failed (${response.status}).`);
+      }
+      const results = await response.json();
+      if (!Array.isArray(results)) {
+        throw new Error("Place search returned an unexpected response.");
+      }
+      const places = results
+        .map((result) => ({
+          name: result.display_name,
+          latitude: Number(result.lat),
+          longitude: Number(result.lon),
+        }))
+        .filter(
+          (place) =>
+            place.name &&
+            Number.isFinite(place.latitude) &&
+            Number.isFinite(place.longitude),
+        );
+      setPlaceResults(places);
+      setPlaceSearchStatus(
+        places.length ? "" : "No matching places found. Try a more specific name.",
+      );
+    } catch (error) {
+      setPlaceSearchStatus(
+        error instanceof Error
+          ? error.message
+          : "Could not search for this place. Check your connection and try again.",
+      );
+    } finally {
+      setIsSearchingPlaces(false);
+    }
+  };
+
+  const selectCustomLocation = (latitude, longitude, name, accuracy = 5) => {
+    onPresetChange("custom");
+    onCoordsChange({ latitude, longitude, accuracy });
+    onLocationNameChange(name);
+    setManualPlaceName(name);
+    setLocationStatus(name ? `Location set to ${name}.` : "Custom coordinates applied.");
+    setPlaceResults([]);
+  };
+
+  const applyManualCoordinates = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const latitude = Number(formData.get("latitude"));
+    const longitude = Number(formData.get("longitude"));
+    if (
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      setLocationStatus("Enter a latitude from -90 to 90 and longitude from -180 to 180.");
+      return;
+    }
+    selectCustomLocation(latitude, longitude, manualPlaceName.trim());
+  };
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationStatus("Location access is not available in this browser.");
+      return;
+    }
+    setIsLocating(true);
+    setPlaceSearchStatus("");
+    setLocationStatus("Requesting your location…");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        selectCustomLocation(
+          position.coords.latitude,
+          position.coords.longitude,
+          "Current location",
+          position.coords.accuracy,
+        );
+        setIsLocating(false);
+      },
+      (error) => {
+        setLocationStatus(
+          error.code === error.PERMISSION_DENIED
+            ? "Location permission was denied. Allow location access in your browser settings and try again."
+            : error.code === error.POSITION_UNAVAILABLE
+              ? "Your location could not be determined. Try searching or entering coordinates."
+              : "Location request timed out. Try again or enter coordinates manually.",
+        );
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+    );
+  };
 
   useEffect(() => {
     if (!heatmapData || !validCells.length) {
@@ -457,6 +593,112 @@ export default function BhuvanMapCard({
           ))}
         </select>
       </div>
+
+      <section className="map-custom-location" aria-label="Set a custom location">
+        <div className="map-custom-location-heading">
+          <div>
+            <span className="eyebrow">CUSTOM LOCATION</span>
+            <p>Search for a place, use your current location, or enter coordinates.</p>
+            <p className="map-current-location">
+              Current point: {selectedLocationName || `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`}
+            </p>
+          </div>
+          <button
+            type="button"
+            className="map-location-action"
+            onClick={useCurrentLocation}
+            disabled={isLocating}
+          >
+            <Crosshair size={14} />
+            {isLocating ? "Finding you…" : "Use my location"}
+          </button>
+        </div>
+        <form className="map-location-search" onSubmit={handlePlaceSearch}>
+          <label className="sr-only" htmlFor="map-place-search">Search for a place</label>
+          <input
+            id="map-place-search"
+            type="search"
+            value={placeQuery}
+            onChange={(event) => setPlaceQuery(event.target.value)}
+            placeholder="Find a place or address"
+          />
+          <button type="submit" disabled={isSearchingPlaces}>
+            {isSearchingPlaces
+              ? <LoaderCircle size={14} className="map-spin" />
+              : <Search size={14} />}
+            {isSearchingPlaces ? "Searching…" : "Find place"}
+          </button>
+        </form>
+        {placeResults.length > 0 && (
+          <ul className="map-location-results" aria-label="Place search results">
+            {placeResults.map((place, index) => (
+              <li key={`${place.latitude}:${place.longitude}:${index}`}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    selectCustomLocation(
+                      place.latitude,
+                      place.longitude,
+                      place.name,
+                    )
+                  }
+                >
+                  <MapPin size={13} />
+                  <span>{place.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <form
+          key={`${coords.latitude}:${coords.longitude}`}
+          className="map-coordinate-form"
+          onSubmit={applyManualCoordinates}
+        >
+          <label>
+            <span>Latitude</span>
+            <input
+              name="latitude"
+              type="number"
+              min="-90"
+              max="90"
+              step="any"
+              required
+              defaultValue={coords.latitude}
+              onChange={() => setManualPlaceName("")}
+            />
+          </label>
+          <label>
+            <span>Longitude</span>
+            <input
+              name="longitude"
+              type="number"
+              min="-180"
+              max="180"
+              step="any"
+              required
+              defaultValue={coords.longitude}
+              onChange={() => setManualPlaceName("")}
+            />
+          </label>
+          <label className="map-coordinate-name">
+            <span>Location name (optional)</span>
+            <input
+              type="text"
+              value={manualPlaceName}
+              onChange={(event) => setManualPlaceName(event.target.value)}
+              placeholder="Name this point"
+            />
+          </label>
+          <button type="submit">Apply coordinates</button>
+        </form>
+        <p className="map-location-status" role="status" aria-live="polite">
+          {placeSearchStatus || locationStatus}
+        </p>
+        <small className="map-location-attribution">
+          Place search by OpenStreetMap Nominatim. Search runs when you submit.
+        </small>
+      </section>
 
       <div className="map-layer-toolbar">
         <label className="map-layer-select" data-tour="map-index-selector">

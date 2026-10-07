@@ -39,6 +39,9 @@ export default function App() {
     longitude: WATERSHED_PRESETS[0].lon,
     accuracy: 4.5,
   });
+  const [selectedLocationName, setSelectedLocationName] = useState(
+    WATERSHED_PRESETS[0].name,
+  );
 
   const [photoBlob, setPhotoBlob] = useState(null);
   const [photoMetadata, setPhotoMetadata] = useState(null);
@@ -60,6 +63,7 @@ export default function App() {
   const handlePresetChange = (presetId) => {
     setSelectedPreset(presetId);
     const target = WATERSHED_PRESETS.find((p) => p.id === presetId);
+    setSelectedLocationName(target?.name ?? "");
     if (target) {
       setCoords({ latitude: target.lat, longitude: target.lon, accuracy: 5.0 });
     }
@@ -76,7 +80,8 @@ export default function App() {
         const activePreset = WATERSHED_PRESETS.find((p) => p.id === selectedPreset);
         const activeName = activePreset
           ? activePreset.name
-          : `Coordinates (${coords.latitude.toFixed(4)}°N, ${coords.longitude.toFixed(4)}°E)`;
+          : selectedLocationName ||
+            `Coordinates (${coords.latitude.toFixed(4)}°N, ${coords.longitude.toFixed(4)}°E)`;
         const data = await fetchWatershedIndices(
           coords.latitude,
           coords.longitude,
@@ -119,7 +124,7 @@ export default function App() {
       clearTimeout(debounceTimerRef.current);
       controller.abort();
     };
-  }, [coords.latitude, coords.longitude, selectedPreset, isOnline]);
+  }, [coords.latitude, coords.longitude, selectedLocationName, selectedPreset, isOnline]);
 
   const refreshPendingCount = useCallback(async () => {
     const count = await db.outbox.count();
@@ -372,6 +377,8 @@ export default function App() {
                   onCoordsChange={setCoords}
                   selectedPreset={selectedPreset}
                   onPresetChange={handlePresetChange}
+                  selectedLocationName={selectedLocationName}
+                  onLocationNameChange={setSelectedLocationName}
                   auditSummary={auditSummary}
                   isIndicesLoading={isIndicesLoading}
                   onHeatmapSummaryChange={setHeatmapSummary}
@@ -380,7 +387,10 @@ export default function App() {
               <aside className="map-side-column">
                 <article className="map-info-card">
                   <span className="eyebrow">ACTIVE STUDY POINT</span>
-                  <h2>{WATERSHED_PRESETS.find((item) => item.id === selectedPreset)?.name ?? "Custom sector"}</h2>
+                  <h2>
+                    {WATERSHED_PRESETS.find((item) => item.id === selectedPreset)?.name ??
+                      (selectedLocationName || "Custom sector")}
+                  </h2>
                   <div className="coordinate-list">
                     <div><span>Latitude</span><strong>{coords.latitude.toFixed(5)}° N</strong></div>
                     <div><span>Longitude</span><strong>{coords.longitude.toFixed(5)}° E</strong></div>

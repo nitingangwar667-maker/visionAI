@@ -14,10 +14,11 @@ export default function VisionCanvasCard({
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState("");
   const [cameraRetryId, setCameraRetryId] = useState(0);
+  const [cameraRequested, setCameraRequested] = useState(false);
 
   useEffect(() => {
     let streamInstance = null;
-    if (!photoPreview) {
+    if (cameraRequested && !photoPreview) {
       const openCamera = async () => {
         if (!navigator.mediaDevices?.getUserMedia) {
           setCameraError("Camera access is unavailable. Use HTTPS or open this site on localhost, then check browser camera permissions.");
@@ -27,7 +28,11 @@ export default function VisionCanvasCard({
           streamInstance = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: "environment" },
           });
-        } catch {
+        } catch (error) {
+          if (error instanceof Error && error.name === "NotAllowedError") {
+            setCameraError("Camera permission was denied. Allow camera access in your browser settings and retry.");
+            return;
+          }
           try {
             streamInstance = await navigator.mediaDevices.getUserMedia({ video: true });
           } catch (error) {
@@ -51,7 +56,7 @@ export default function VisionCanvasCard({
     return () => {
       if (streamInstance) streamInstance.getTracks().forEach((t) => t.stop());
     };
-  }, [cameraRetryId, photoPreview]);
+  }, [cameraRequested, cameraRetryId, photoPreview]);
 
   // Draw YOLO bounding boxes over image when inference completes
   useEffect(() => {
@@ -255,6 +260,7 @@ export default function VisionCanvasCard({
             onClick={() => {
               setCameraError("");
               setCameraReady(false);
+              setCameraRequested(true);
               setCameraRetryId((retryId) => retryId + 1);
             }}
           >
@@ -280,12 +286,16 @@ export default function VisionCanvasCard({
       {!photoPreview ? (
         <button
           type="button"
-          onClick={snap}
-          disabled={!cameraReady || isProcessing}
+          onClick={() => cameraRequested ? snap() : setCameraRequested(true)}
+          disabled={isProcessing || (cameraRequested && !cameraReady)}
           className="mt-3 w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs tracking-wide shadow-lg shadow-sky-500/20 transition active:scale-[0.98]"
         >
           <Camera className="w-4 h-4" />
-          {cameraReady ? "TAKE PHOTO" : cameraError ? "CAMERA UNAVAILABLE" : "STARTING CAMERA…"}
+          {cameraReady
+            ? "TAKE PHOTO"
+            : cameraRequested
+              ? cameraError ? "CAMERA UNAVAILABLE" : "STARTING CAMERA…"
+              : "START CAMERA"}
         </button>
       ) : (
         <button
